@@ -57,6 +57,8 @@ function getDetailByIDnCode(productID, productCode) {
                     code: pDetail.dataValues.code,
                     description: pDetail.dataValues.description,
                     isOffer: pDetail.dataValues.isOffer,
+                    isFree: pDetail.dataValues.isFree,
+                    isOutStock: pDetail.dataValues.isOutStock,
                     categoryID: pDetail.dataValues.categoryID.toString(),
                     sectionID: pDetail.dataValues.sectionID.toString(),
                     price: parseFloat(pDetail.dataValues.price)
@@ -87,6 +89,8 @@ function getDetailByIDnCode(productID, productCode) {
                         code: product.dataValues.code,
                         description: product.dataValues.description,
                         isOffer: product.dataValues.isOffer,
+                        isFree: pDetail.dataValues.isFree,
+                        isOutStock: pDetail.dataValues.isOutStock,
                         categoryID: product.dataValues.categoryID.toString(),
                         sectionID: product.dataValues.sectionID.toString(),
                         price: parseFloat(product.dataValues.price)

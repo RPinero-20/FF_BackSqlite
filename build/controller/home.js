@@ -43,6 +43,8 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
                 code: product.dataValues.code,
                 description: product.dataValues.description,
                 isOffer: product.dataValues.isOffer,
+                isFree: product.dataValues.isFree,
+                isOutStock: product.dataValues.isOutStock,
                 categoryID: product.dataValues.categoryID.toString(),
                 sectionID: product.dataValues.sectionID.toString(),
                 price: parseFloat(product.dataValues.price)
@@ -71,6 +73,8 @@ const getProductList = (_req, res) => __awaiter(void 0, void 0, void 0, function
             code: product.dataValues.code,
             description: product.dataValues.description,
             isOffer: product.dataValues.isOffer,
+            isFree: product.dataValues.isFree,
+            isOutStock: product.dataValues.isOutStock,
             categoryID: product.dataValues.categoryID.toString(),
             sectionID: product.dataValues.sectionID.toString(),
             price: parseFloat(product.dataValues.price)
