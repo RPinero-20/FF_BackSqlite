@@ -41,10 +41,10 @@ exports.productsHome = connect_1.default.define('ff_products', {
         type: sequelize_typescript_1.DataType.NUMBER
     },
     isFree: {
-        type: sequelize_typescript_1.DataType.NUMBER
+        type: sequelize_typescript_1.DataType.BOOLEAN
     },
     isOutStock: {
-        type: sequelize_typescript_1.DataType.NUMBER
+        type: sequelize_typescript_1.DataType.BOOLEAN
     },
     categoryID: {
         type: sequelize_typescript_1.DataType.INTEGER
