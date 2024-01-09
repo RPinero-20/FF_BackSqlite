@@ -81,10 +81,10 @@ exports.adminProducts = connect_1.default.define('ff_products', {
         type: sequelize_typescript_1.DataType.NUMBER
     },
     discount: {
-        type: sequelize_typescript_1.DataType.INTEGER
+        type: sequelize_typescript_1.DataType.BOOLEAN
     },
     categoryID: {
-        type: sequelize_typescript_1.DataType.INTEGER
+        type: sequelize_typescript_1.DataType.BOOLEAN
     },
     sectionID: {
         type: sequelize_typescript_1.DataType.INTEGER
