@@ -14,8 +14,7 @@ const admin_1 = require("../models/admin");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll();
-        const result = categoryList.map(item => [item.dataValues.id, item.dataValues.name]);
-        res.json(result);
+        res.json(categoryList);
     }
     catch (error) {
         console.log(error);
@@ -27,9 +26,8 @@ const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, func
 exports.getAdminCategories = getAdminCategories;
 const getAdminSections = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const categoryList = yield admin_1.adminSections.findAll();
-        const result = categoryList.map(item => [item.dataValues.id, item.dataValues.name]);
-        res.json(result);
+        const sectionList = yield admin_1.adminSections.findAll();
+        res.json(sectionList);
     }
     catch (error) {
         console.log(error);
