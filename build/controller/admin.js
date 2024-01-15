@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProducts = exports.postProduct = exports.putProductToEdit = exports.getProductById = exports.getProducts = exports.getAdminCategories = void 0;
+exports.deleteProducts = exports.postProduct = exports.putProductToEdit = exports.getProductById = exports.getProducts = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -25,6 +25,20 @@ const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getAdminCategories = getAdminCategories;
+const getAdminSections = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const categoryList = yield admin_1.adminSections.findAll();
+        const result = categoryList.map(item => [item.dataValues.id, item.dataValues.name]);
+        res.json(result);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: ' Internal Server Error'
+        });
+    }
+});
+exports.getAdminSections = getAdminSections;
 const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const productList = yield admin_1.adminProducts.findAll();

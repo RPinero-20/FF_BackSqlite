@@ -12,6 +12,7 @@ const toEdit = '/products/:code';
 const toDetail = '/productDetail/:id';
 const toDelete = '/deleteProduct/:id';
 const categories = '/categories';
+const sections = '/sections';
 const users = '/users';
 adminRouter.use((_req, _res, next) => {
     (0, connect_1.conectToDB)();
@@ -23,6 +24,7 @@ adminRouter.put(toEdit, admin_1.putProductToEdit);
 adminRouter.post(products, admin_1.postProduct);
 adminRouter.delete(toDelete, admin_1.deleteProducts);
 adminRouter.get(users, usuarios_1.getUsuarios);
+adminRouter.get(sections, admin_1.getAdminSections);
 adminRouter.get(categories, admin_2.getAdminCategories);
 exports.default = adminRouter;
 //# sourceMappingURL=admin.js.map
