@@ -11,7 +11,7 @@ const products = '/products';
 const toEdit = '/products/:code';
 const toDetail = '/productDetail/:id';
 const toDelete = '/deleteProduct/:id';
-const categories = '/category';
+const categories = '/categories';
 const users = '/users';
 adminRouter.use((_req, _res, next) => {
     (0, connect_1.conectToDB)();

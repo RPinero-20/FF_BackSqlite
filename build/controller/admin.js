@@ -14,7 +14,8 @@ const admin_1 = require("../models/admin");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll();
-        res.json(categoryList);
+        const result = categoryList.map(item => [item.dataValues.id, item.dataValues.name]);
+        res.json(result);
     }
     catch (error) {
         console.log(error);
