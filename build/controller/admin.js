@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProducts = exports.postProduct = exports.putProductToEdit = exports.getProductById = exports.getProducts = exports.getAdminSections = exports.getAdminCategories = void 0;
+exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = exports.deleteProducts = exports.postProduct = exports.putProductToEdit = exports.getProductById = exports.getProducts = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
+const admin_2 = require("../models/admin");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll();
@@ -145,4 +146,83 @@ const deleteProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.deleteProducts = deleteProducts;
+const getUsuarios = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const usuarios = yield admin_2.adminUsers.findAll();
+    res.json(usuarios);
+});
+exports.getUsuarios = getUsuarios;
+const getUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const usuario = yield admin_2.adminUsers.findByPk(id);
+    if (usuario) {
+        res.json(usuario);
+    }
+    else {
+        res.status(404).json({
+            msg: `No existe un usuario con el id: ${id}`,
+        });
+    }
+});
+exports.getUsuario = getUsuario;
+const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    try {
+        const existEmail = yield admin_2.adminUsers.findOne({
+            where: {
+                email: body.email
+            }
+        });
+        if (existEmail) {
+            res.status(400).json({
+                msg: 'Email de usuario ya existe. ' + body.email
+            });
+            return;
+        }
+        const usuario = yield admin_2.adminUsers.create(body);
+        res.json(usuario);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Comuníquese con el administrador.'
+        });
+    }
+});
+exports.postUsuario = postUsuario;
+const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const { body } = req;
+    try {
+        const usuario = yield admin_2.adminUsers.findByPk(id);
+        if (!usuario) {
+            res.status(404).json({
+                msg: 'No existe usuario con ID: ' + id
+            });
+            return;
+        }
+        yield usuario.update(body);
+        res.json(usuario);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Comuníquese con el administrador.'
+        });
+    }
+});
+exports.putUsuario = putUsuario;
+const deleteUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const usuario = yield admin_2.adminUsers.findByPk(id);
+    if (!usuario) {
+        res.status(404).json({
+            msg: 'No se encuentra el usuario con indicado' + id
+        });
+    }
+    else {
+        yield usuario.update({ status: false });
+    }
+    res.json(usuario);
+});
+exports.deleteUsuario = deleteUsuario;
 //# sourceMappingURL=admin.js.map
