@@ -22,5 +22,6 @@ clientRouter.get(categories, categories_1.getCategories);
 clientRouter.get(productsList, productsList_1.getFnToFind);
 clientRouter.get(productDetail, productDetail_1.getProductDetail);
 clientRouter.post(payresume, payresume_1.getPayResume);
+clientRouter.put(payresume, payresume_1.getPayResume);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map

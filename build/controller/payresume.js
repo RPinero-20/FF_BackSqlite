@@ -9,51 +9,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPayResumeCalc = exports.getPayResume = void 0;
-function getPayResume(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const precio = 200;
-        const descuento = 50;
-        const { body } = req;
-        console.log(body);
-        const calculos = {
-            "subtotal": 12.99,
-            "discount": 20,
-            "ivaUS": 16,
-            "igtf": 3,
-            "total": 12.41
-        };
-        res.json(calculos);
-    });
-}
-exports.getPayResume = getPayResume;
-class getPayResumeCalc {
-    constructor(_precio, _descuento) {
-        this.productos = [];
-        console.log(this.productos);
-    }
-    agregarProducto(precio, porcentajeDescuento) {
-        this.productos.push({
-            precio: precio,
-            descuento: porcentajeDescuento,
+exports.getPayResume = void 0;
+const payResume_1 = require("../models/payResume");
+const payResumeCalc_1 = require("./payResumeCalc");
+const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    try {
+        const productID = body.productList.map((strID) => strID.productId);
+        const productQty = body.productList.map((prodQty) => prodQty.quantity);
+        const productByIdPromises = productID.map((id) => __awaiter(void 0, void 0, void 0, function* () {
+            const product = yield payResume_1.cartListProducts.findByPk(id);
+            return product;
+        }));
+        const products = yield Promise.all(productByIdPromises);
+        const productsWithQty = products.map((product, index) => {
+            const priceDiscount = (0, payResumeCalc_1.calcularDescuentoProducto)(product === null || product === void 0 ? void 0 : product.dataValues.price, product === null || product === void 0 ? void 0 : product.dataValues.isOffer);
+            const productDiscount = (0, payResumeCalc_1.calcularDescuentoGlobal)(product === null || product === void 0 ? void 0 : product.dataValues.price, product === null || product === void 0 ? void 0 : product.dataValues.isOffer);
+            return Object.assign(Object.assign({ userId: parseInt(body.userId) }, product === null || product === void 0 ? void 0 : product.dataValues), { price: priceDiscount, requestedQty: productQty[index], discount: productDiscount });
         });
-        console.log(this.productos);
+        const productsCalculated = productsWithQty.map((product) => {
+            return Object.assign(Object.assign({}, product), { price: product.price * product.requestedQty });
+        });
+        const subtotal = productsCalculated.reduce((total, product) => {
+            console.log("TOTAL::::::::: ", total);
+            return total + product.price;
+        }, 0);
+        console.log(subtotal);
+        const totalDescuentoPorProducto = productsCalculated.reduce((total, product) => {
+            const descuentoPorProducto = (product === null || product === void 0 ? void 0 : product.requestedQty) * (product === null || product === void 0 ? void 0 : product.discount);
+            return total + descuentoPorProducto;
+        }, 0);
+        const returnObject = {
+            subtotal: subtotal,
+            discount: totalDescuentoPorProducto,
+            ivaUsd: 16,
+            igtf: 3,
+            totalBsd: 2.232,
+            totalUsd: 61.81
+        };
+        res.json(returnObject);
     }
-    calcularDescuentoProducto(precio, porcentajeDescuento) {
-        const descuento = precio * (porcentajeDescuento / 100);
-        const precioConDescuento = precio - descuento;
-        console.log(precioConDescuento);
-        return precioConDescuento;
+    catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: 'Error interno contacte al administrador.'
+        });
     }
-    calcularDescuentoGlobal() {
-        let totalDescuento = 0;
-        for (let producto of this.productos) {
-            const precioConDescuento = this.calcularDescuentoProducto(producto.precio, producto.descuento);
-            const descuentoAplicado = producto.precio - precioConDescuento;
-            totalDescuento += descuentoAplicado;
-        }
-        return totalDescuento;
-    }
-}
-exports.getPayResumeCalc = getPayResumeCalc;
+});
+exports.getPayResume = getPayResume;
 //# sourceMappingURL=payresume.js.map
