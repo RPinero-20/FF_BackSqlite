@@ -39,13 +39,21 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const descuentoPorProducto = (product === null || product === void 0 ? void 0 : product.requestedQty) * (product === null || product === void 0 ? void 0 : product.discount);
             return total + descuentoPorProducto;
         }, 0);
+        const ivaUsd = 16;
+        const dolarToday = 36.11;
+        const subTotalBsd = subtotal * dolarToday;
+        const iva = subTotalBsd * (ivaUsd / 100);
+        const totalBsd = subTotalBsd + iva;
+        const igtf = subtotal * (3 / 100);
+        const totalImpuesto = igtf + (subtotal * 0.16);
+        const totalUsd = subtotal + totalImpuesto;
         const returnObject = {
             subtotal: subtotal,
             discount: totalDescuentoPorProducto,
             ivaUsd: 16,
             igtf: 3,
-            totalBsd: 2.232,
-            totalUsd: 61.81
+            totalBsd: parseFloat(totalBsd.toFixed(2)),
+            totalUsd: parseFloat(totalUsd.toFixed(2))
         };
         res.json(returnObject);
     }
