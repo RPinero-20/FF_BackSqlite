@@ -45,7 +45,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const iva = subTotalBsd * (ivaUsd / 100);
         const totalBsd = subTotalBsd + iva;
         const igtf = subtotal * (3 / 100);
-        const totalImpuesto = igtf + (subtotal * 0.16);
+        const totalImpuesto = igtf * 0.16;
         const totalUsd = subtotal + totalImpuesto;
         const returnObject = {
             subtotal: subtotal,
