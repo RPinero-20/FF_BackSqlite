@@ -14,6 +14,12 @@ const payResume_1 = require("../models/payResume");
 const payResumeCalc_1 = require("./payResumeCalc");
 const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
+    for (let key in body) {
+        if (body[key] === null) {
+            body[key] = 0;
+        }
+    }
+    console.log(`BODY:::: ${body.dataValues}`);
     try {
         const productID = body.productList.map((strID) => strID.productId);
         const productQty = body.productList.map((prodQty) => prodQty.quantity);
@@ -31,10 +37,8 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return Object.assign(Object.assign({}, product), { price: product.price * product.requestedQty });
         });
         const subtotal = productsCalculated.reduce((total, product) => {
-            console.log("TOTAL::::::::: ", total);
             return total + product.price;
         }, 0);
-        console.log(subtotal);
         const totalDescuentoPorProducto = productsCalculated.reduce((total, product) => {
             const descuentoPorProducto = (product === null || product === void 0 ? void 0 : product.requestedQty) * (product === null || product === void 0 ? void 0 : product.discount);
             return total + descuentoPorProducto;
@@ -55,10 +59,14 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             totalBsd: parseFloat(totalBsd.toFixed(2)),
             totalUsd: parseFloat(totalUsd.toFixed(2))
         };
+        for (let key in returnObject) {
+            if (returnObject[key] === null) {
+                returnObject[key] = 0;
+            }
+        }
         res.json(returnObject);
     }
     catch (error) {
-        console.log(error);
         res.status(500).json({
             msg: 'Error interno contacte al administrador.'
         });
