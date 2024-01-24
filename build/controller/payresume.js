@@ -19,7 +19,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             body[key] = 0;
         }
     }
-    console.log(`BODY:::: ${body.dataValues}`);
+    console.log(`BODY:::: ${body}`);
     try {
         const productID = body.productList.map((strID) => strID.productId);
         const productQty = body.productList.map((prodQty) => prodQty.quantity);
@@ -61,7 +61,13 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         };
         for (let key in returnObject) {
             if (returnObject[key] === null) {
+                console.log(key);
                 returnObject[key] = 0;
+            }
+            for (let key in returnObject) {
+                if (isNaN(returnObject[key])) {
+                    returnObject[key] = 0;
+                }
             }
         }
         res.json(returnObject);
