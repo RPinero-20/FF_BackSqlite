@@ -21,8 +21,8 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     console.log(body);
     try {
-        const productID = body.productList.map((strID) => strID.productId);
-        const productQty = body.productList.map((prodQty) => prodQty.quantity);
+        const productID = body.productsList.map((strID) => strID.productId);
+        const productQty = body.productsList.map((prodQty) => prodQty.quantity);
         const productByIdPromises = productID.map((id) => __awaiter(void 0, void 0, void 0, function* () {
             const product = yield payResume_1.cartListProducts.findByPk(id);
             return product;
