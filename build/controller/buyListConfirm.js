@@ -9,22 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPayResume = void 0;
-const payResume_1 = require("../models/payResume");
+exports.postBuyList = void 0;
+const buyListConfirm_1 = require("../models/buyListConfirm");
 const payResumeCalc_1 = require("./payResumeCalc");
-const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const postBuyList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
-    for (let key in body) {
-        if (body[key] === null) {
-            body[key] = 0;
-        }
-    }
-    console.log(body);
     try {
         const productID = body.productList.map((strID) => strID.productId);
         const productQty = body.productList.map((prodQty) => prodQty.quantity);
         const productByIdPromises = productID.map((id) => __awaiter(void 0, void 0, void 0, function* () {
-            const product = yield payResume_1.cartListProducts.findByPk(id);
+            const product = yield buyListConfirm_1.buyListConfirm.findByPk(id);
             return product;
         }));
         const products = yield Promise.all(productByIdPromises);
@@ -78,5 +72,5 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
 });
-exports.getPayResume = getPayResume;
-//# sourceMappingURL=payresume.js.map
+exports.postBuyList = postBuyList;
+//# sourceMappingURL=buyListConfirm.js.map

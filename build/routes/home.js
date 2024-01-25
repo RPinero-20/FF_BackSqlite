@@ -6,6 +6,7 @@ const productDetail_1 = require("../controller/productDetail");
 const categories_1 = require("../controller/categories");
 const productsList_1 = require("../controller/productsList");
 const payresume_1 = require("../controller/payresume");
+const buyListConfirm_1 = require("../controller/buyListConfirm");
 const connect_1 = require("../db/connect");
 const clientRouter = (0, express_1.Router)();
 const homeUrl = "/home";
@@ -13,6 +14,7 @@ const categories = "/categories";
 const productsList = "/productsList";
 const productDetail = "/productDetail";
 const payresume = "/payresume";
+const buyListConfirm = "/buyListConfirm";
 clientRouter.use((_req, _res, next) => {
     (0, connect_1.conectToDB)();
     next();
@@ -23,5 +25,6 @@ clientRouter.get(productsList, productsList_1.getFnToFind);
 clientRouter.get(productDetail, productDetail_1.getProductDetail);
 clientRouter.post(payresume, payresume_1.getPayResume);
 clientRouter.put(payresume, payresume_1.getPayResume);
+clientRouter.post(buyListConfirm, buyListConfirm_1.postBuyList);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map
