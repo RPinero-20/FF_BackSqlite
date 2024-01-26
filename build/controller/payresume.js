@@ -68,6 +68,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 }
             }
         }
+        res.json(payResume);
         body.userId = parseInt(body.userId);
         const preOrder = Object.assign(Object.assign({}, body), { payResume: JSON.stringify({
                 payResume
@@ -88,7 +89,6 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 }
             });
         }
-        res.json(payResume);
     }
     catch (error) {
         console.error("Error al guardar en la base de datos:", error);
