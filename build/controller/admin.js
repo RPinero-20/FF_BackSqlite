@@ -18,7 +18,7 @@ const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, func
         res.json(categoryList);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             error: ' Internal Server Error'
         });
@@ -31,7 +31,7 @@ const getAdminSections = (_req, res) => __awaiter(void 0, void 0, void 0, functi
         res.json(sectionList);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             error: ' Internal Server Error'
         });
@@ -44,7 +44,7 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.json(productList);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             error: ' Internal Server Error'
         });
@@ -87,7 +87,7 @@ const putProductToEdit = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const { body } = req;
     try {
         const productToEdit = yield getProductByCode(code);
-        console.log(productToEdit);
+        console.error(productToEdit);
         if (!productToEdit) {
             res.status(404).json({
                 Error: 'No existe Producto con Código: ' + code
@@ -98,7 +98,7 @@ const putProductToEdit = (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.json(productToEdit);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             error: 'Internal Server Error.'
         });
@@ -123,7 +123,7 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.json(productData);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             msg: 'Error interno contacte al administrador.'
         });
@@ -182,7 +182,7 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.json(usuario);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             msg: 'Comuníquese con el administrador.'
         });
@@ -204,7 +204,7 @@ const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.json(usuario);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             msg: 'Comuníquese con el administrador.'
         });

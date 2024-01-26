@@ -18,7 +18,6 @@ function separarPalabras(cadena) {
 const getFnToFind = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const params = req.query;
-    console.log(params);
     if (params !== undefined) {
         if (params.hasOwnProperty('category') === true) {
             const catID = Number(params.category);
@@ -34,7 +33,6 @@ const getFnToFind = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             if (params.hasOwnProperty('search') === true) {
                 const searchName = (_a = params.search) !== null && _a !== void 0 ? _a : '';
                 try {
-                    console.log(searchName);
                     res.json(yield getProductsByName(searchName));
                 }
                 catch (error) {
@@ -51,7 +49,6 @@ function getProductsByCategory(params) {
     return __awaiter(this, void 0, void 0, function* () {
         const catID = params;
         try {
-            console.log(catID);
             const productListByCategory = yield home_1.productsHome.findAll({
                 where: {
                     categoryID: catID
@@ -104,7 +101,6 @@ function getProductsByName(params) {
                 sectionID: product.dataValues.sectionID.toString(),
                 price: parseFloat(product.dataValues.price)
             }));
-            console.log(productsList);
             return (productsList);
         }
         catch (error) {

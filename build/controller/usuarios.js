@@ -50,7 +50,7 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.json(usuario);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             msg: 'Comuníquese con el administrador.'
         });
@@ -72,7 +72,7 @@ const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.json(usuario);
     }
     catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             msg: 'Comuníquese con el administrador.'
         });

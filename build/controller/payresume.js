@@ -19,7 +19,6 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             body[key] = 0;
         }
     }
-    console.log(body);
     try {
         const productID = body.productsList.map((strID) => strID.productId);
         const productQty = body.productsList.map((prodQty) => prodQty.quantity);
@@ -51,28 +50,48 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const igtf = subtotal * (3 / 100);
         const totalImpuesto = igtf * 0.16;
         const totalUsd = subtotal + totalImpuesto;
-        const returnObject = {
-            subtotal: subtotal,
+        const payResume = {
+            subtotal: subtotal.toFixed(2),
             discount: totalDescuentoPorProducto,
             ivaUsd: 16,
             igtf: 3,
             totalBsd: parseFloat(totalBsd.toFixed(2)),
             totalUsd: parseFloat(totalUsd.toFixed(2))
         };
-        for (let key in returnObject) {
-            if (returnObject[key] === null) {
-                console.log(key);
-                returnObject[key] = 0;
+        for (let key in payResume) {
+            if (payResume[key] === null) {
+                payResume[key] = 0;
             }
-            for (let key in returnObject) {
-                if (isNaN(returnObject[key])) {
-                    returnObject[key] = 0;
+            for (let key in payResume) {
+                if (isNaN(payResume[key])) {
+                    payResume[key] = 0;
                 }
             }
         }
-        res.json(returnObject);
+        body.userId = parseInt(body.userId);
+        const preOrder = Object.assign(Object.assign({}, body), { payResume: JSON.stringify({
+                payResume
+            }) });
+        delete preOrder.productsList;
+        const existPreOrder = yield payResume_1.cartListpreOrder.findOne({
+            where: {
+                userId: body.userId
+            }
+        });
+        if (!existPreOrder) {
+            yield payResume_1.cartListpreOrder.create(preOrder);
+        }
+        else {
+            yield payResume_1.cartListpreOrder.update(preOrder, {
+                where: {
+                    userId: body.userId
+                }
+            });
+        }
+        res.json(payResume);
     }
     catch (error) {
+        console.error("Error al guardar en la base de datos:", error);
         res.status(500).json({
             msg: 'Error interno contacte al administrador.'
         });
