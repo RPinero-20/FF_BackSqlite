@@ -51,7 +51,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const totalImpuesto = igtf * 0.16;
         const totalUsd = subtotal + totalImpuesto;
         const payResume = {
-            subtotal: subtotal.toFixed(2),
+            subtotal: parseFloat(subtotal.toFixed(2)),
             discount: totalDescuentoPorProducto,
             ivaUsd: 16,
             igtf: 3,

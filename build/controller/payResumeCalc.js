@@ -33,7 +33,6 @@ exports.getPayResumeCalc = getPayResumeCalc;
 function calcularDescuentoProducto(precio, porcentajeDescuento) {
     const descuento = precio * (porcentajeDescuento / 100);
     const precioConDescuento = precio - descuento;
-    console.log(precioConDescuento);
     return precioConDescuento.toFixed(2);
 }
 exports.calcularDescuentoProducto = calcularDescuentoProducto;
