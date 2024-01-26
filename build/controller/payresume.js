@@ -28,8 +28,10 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }));
         const products = yield Promise.all(productByIdPromises);
         const productsWithQty = products.map((product, index) => {
-            const priceDiscount = (0, payResumeCalc_1.calcularDescuentoProducto)(product === null || product === void 0 ? void 0 : product.dataValues.price, product === null || product === void 0 ? void 0 : product.dataValues.isOffer);
-            const productDiscount = (0, payResumeCalc_1.calcularDescuentoGlobal)(product === null || product === void 0 ? void 0 : product.dataValues.price, product === null || product === void 0 ? void 0 : product.dataValues.isOffer);
+            const isFree = (product === null || product === void 0 ? void 0 : product.dataValues.isFree) === true;
+            const price = isFree ? 0 : parseFloat(product === null || product === void 0 ? void 0 : product.dataValues.price);
+            const priceDiscount = (0, payResumeCalc_1.calcularDescuentoProducto)(price, product === null || product === void 0 ? void 0 : product.dataValues.isOffer);
+            const productDiscount = (0, payResumeCalc_1.calcularDescuentoGlobal)(price, product === null || product === void 0 ? void 0 : product.dataValues.isOffer);
             return Object.assign(Object.assign({ userId: parseInt(body.userId) }, product === null || product === void 0 ? void 0 : product.dataValues), { price: priceDiscount, requestedQty: productQty[index], discount: productDiscount });
         });
         const productsCalculated = productsWithQty.map((product) => {
