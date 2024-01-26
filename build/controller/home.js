@@ -36,6 +36,8 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
             return newSection;
         });
         const productsList = products.map(product => {
+            const isFree = product.dataValues.isFree === true;
+            const price = isFree ? 0 : parseFloat(product.dataValues.price);
             const productsToFront = {
                 id: product.dataValues.id.toString(),
                 imageUrl: product.dataValues.imageUrl,
@@ -47,7 +49,7 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
                 isOutStock: product.dataValues.isOutStock,
                 categoryID: product.dataValues.categoryID.toString(),
                 sectionID: product.dataValues.sectionID.toString(),
-                price: parseFloat(product.dataValues.price)
+                price: price
             };
             return productsToFront;
         });
