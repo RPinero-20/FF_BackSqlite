@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calcularDescuentoGlobal = exports.calcularDescuentoProducto = exports.getPayResumeCalc = void 0;
+exports.checkStock = exports.calcularDescuentoGlobal = exports.calcularDescuentoProducto = exports.getPayResumeCalc = void 0;
 class getPayResumeCalc {
     constructor(_precio, _descuento) {
         this.productos = [];
@@ -36,6 +36,7 @@ function calcularDescuentoProducto(precio, porcentajeDescuento) {
     return precioConDescuento.toFixed(2);
 }
 exports.calcularDescuentoProducto = calcularDescuentoProducto;
+;
 function calcularDescuentoGlobal(price, isOffer) {
     let totalDescuento = 0;
     if (isOffer != 0) {
@@ -46,4 +47,21 @@ function calcularDescuentoGlobal(price, isOffer) {
     return parseFloat(totalDescuento.toFixed(2));
 }
 exports.calcularDescuentoGlobal = calcularDescuentoGlobal;
+;
+function checkStock(products) {
+    let outOfStock = [];
+    const outOfStockProduct = [];
+    products.forEach((product) => {
+        const remainingQty = product.unitQty - product.requestedQty;
+        if (remainingQty <= 0) {
+            outOfStockProduct.push(product.id.toString());
+            outOfStock = outOfStockProduct;
+        }
+        else {
+            product.isConfirmed = true;
+        }
+    });
+    return outOfStock;
+}
+exports.checkStock = checkStock;
 //# sourceMappingURL=payResumeCalc.js.map

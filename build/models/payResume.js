@@ -25,6 +25,9 @@ exports.cartListProducts = connect_1.default.define('ff_products', {
         primaryKey: true,
         type: sequelize_typescript_1.DataType.STRING
     },
+    name: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
     code: {
         type: sequelize_typescript_1.DataType.STRING
     },

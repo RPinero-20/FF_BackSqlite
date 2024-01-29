@@ -10,9 +10,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postBuyList = void 0;
-const postBuyList = (req, _res) => __awaiter(void 0, void 0, void 0, function* () {
+const buyListConfirm_1 = require("../models/buyListConfirm");
+const postBuyList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     console.log(body);
+    try {
+        const productID = body.productsList.map((strID) => strID.productId);
+        const productQty = body.productsList.map((prodQty) => prodQty.quantity);
+        const productByIdPromises = productID.map((id) => __awaiter(void 0, void 0, void 0, function* () {
+            const product = yield buyListConfirm_1.buyListConfirm.findByPk(id);
+            return product;
+        }));
+        const products = yield Promise.all(productByIdPromises);
+        console.log(products);
+        res.json({ msg: "OK" });
+    }
+    catch (_a) {
+    }
 });
 exports.postBuyList = postBuyList;
 //# sourceMappingURL=buyListConfirm.js.map

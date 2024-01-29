@@ -9,9 +9,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPayResume = void 0;
+exports.getPayResume = exports.getAddressArrival = void 0;
 const payResume_1 = require("../models/payResume");
 const payResumeCalc_1 = require("./payResumeCalc");
+const usuario_1 = require("../models/usuario");
+const getAddressArrival = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    console.log(id);
+    try {
+        const addressArrival = yield usuario_1.Clients.findByPk(id);
+        console.log(addressArrival);
+        res.json({ "Address": addressArrival === null || addressArrival === void 0 ? void 0 : addressArrival.dataValues.address });
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: 'Error interno contacte al administrador.'
+        });
+    }
+});
+exports.getAddressArrival = getAddressArrival;
 const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     for (let key in body) {
@@ -64,13 +81,47 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             if (payResume[key] === null) {
                 payResume[key] = 0;
             }
+            ;
             for (let key in payResume) {
                 if (isNaN(payResume[key])) {
                     payResume[key] = 0;
                 }
             }
+            ;
         }
-        res.json(payResume);
+        ;
+        const existProduct = (0, payResumeCalc_1.checkStock)(productsCalculated);
+        if (existProduct.length === 0) {
+            const existProduct = body;
+            existProduct["productsList"] = [];
+            existProduct["payResume"] = payResume;
+            res.status(201).json(existProduct);
+        }
+        else {
+            const productsList = [];
+            let probando;
+            yield Promise.all(existProduct.map((productID) => __awaiter(void 0, void 0, void 0, function* () {
+                const product = yield payResume_1.cartListProducts.findByPk(parseInt(productID));
+                const outOfStockProduct = {
+                    id: product === null || product === void 0 ? void 0 : product.dataValues.id,
+                    name: product === null || product === void 0 ? void 0 : product.dataValues.name,
+                    code: product === null || product === void 0 ? void 0 : product.dataValues.code,
+                    unitQty: product === null || product === void 0 ? void 0 : product.dataValues.unitQty,
+                    unitPerBox: product === null || product === void 0 ? void 0 : product.dataValues.unitPerBox,
+                    isOffer: product === null || product === void 0 ? void 0 : product.dataValues.isOffer,
+                    isFree: product === null || product === void 0 ? void 0 : product.dataValues.isFree,
+                    isOutStock: product === null || product === void 0 ? void 0 : product.dataValues.isOutStock,
+                    price: product === null || product === void 0 ? void 0 : product.dataValues.price,
+                    requestedQty: product === null || product === void 0 ? void 0 : product.dataValues.requestedQty,
+                    discount: product === null || product === void 0 ? void 0 : product.dataValues.discount,
+                };
+                productsList.push(outOfStockProduct);
+            })));
+            probando = body;
+            probando["productsList"] = productsList;
+            probando["payResume"] = payResume;
+            res.json(probando);
+        }
         body.userId = parseInt(body.userId);
         const preOrder = Object.assign(Object.assign({}, body), { payResume: JSON.stringify({
                 payResume
