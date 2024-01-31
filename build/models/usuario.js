@@ -10,12 +10,29 @@ exports.Usuario = connect_1.default.define('ff_users', {
     name: {
         type: sequelize_1.DataTypes.STRING
     },
+    idNumber: {
+        type: sequelize_1.DataTypes.NUMBER
+    },
     email: {
         type: sequelize_1.DataTypes.STRING
+    },
+    phone: {
+        type: sequelize_1.DataTypes.NUMBER
     },
     status: {
         type: sequelize_1.DataTypes.BOOLEAN
     },
+    job: {
+        type: sequelize_1.DataTypes.STRING
+    },
+    department: {
+        type: sequelize_1.DataTypes.STRING
+    },
+    address: {
+        type: sequelize_1.DataTypes.STRING
+    }
+}, {
+    timestamps: false
 });
 exports.Clients = connect_1.default.define('ff_clients', {
     rif: {

@@ -108,6 +108,9 @@ exports.adminUsers = connect_1.default.define('ff_users', {
     name: {
         type: sequelize_typescript_1.DataType.STRING
     },
+    idNumber: {
+        type: sequelize_typescript_1.DataType.NUMBER
+    },
     email: {
         type: sequelize_typescript_1.DataType.STRING
     },
@@ -115,11 +118,17 @@ exports.adminUsers = connect_1.default.define('ff_users', {
         type: sequelize_typescript_1.DataType.NUMBER
     },
     status: {
-        type: sequelize_typescript_1.DataType.NUMBER
+        type: sequelize_typescript_1.DataType.BOOLEAN
+    },
+    job: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
+    department: {
+        type: sequelize_typescript_1.DataType.STRING
     },
     address: {
         type: sequelize_typescript_1.DataType.STRING
-    },
+    }
 }, {
     timestamps: false
 });

@@ -13,6 +13,7 @@ exports.getPayResume = exports.getAddressArrival = void 0;
 const payResume_1 = require("../models/payResume");
 const payResumeCalc_1 = require("./payResumeCalc");
 const usuario_1 = require("../models/usuario");
+const buyListConfirm_1 = require("../models/buyListConfirm");
 const getAddressArrival = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     console.log(id);
@@ -37,6 +38,21 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
     }
     try {
+        if (body.orderId.length != 0) {
+            const existOrder = yield buyListConfirm_1.orderDetailConfirmedModel.findOne({
+                where: {
+                    orderNumber: body.orderId
+                }
+            });
+            if (!existOrder) {
+                for (let key in body) {
+                    console.log("PRODUCT ID::::: ", body);
+                    const productToBuy = yield buyListConfirm_1.orderProductsConfirmedModel.findByPk(body.productsList.productId);
+                    console.log("productToBuy::::: ", productToBuy);
+                }
+            }
+            console.log(":::::: ORDER ID = VACIO ::::::");
+        }
         const productID = body.productsList.map((strID) => strID.productId);
         const productQty = body.productsList.map((prodQty) => prodQty.quantity);
         const productByIdPromises = productID.map((id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -99,7 +115,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         else {
             const productsList = [];
-            let probando;
+            let OutStockList;
             yield Promise.all(existProduct.map((productID) => __awaiter(void 0, void 0, void 0, function* () {
                 const product = yield payResume_1.cartListProducts.findByPk(parseInt(productID));
                 const outOfStockProduct = {
@@ -117,10 +133,10 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 };
                 productsList.push(outOfStockProduct);
             })));
-            probando = body;
-            probando["productsList"] = productsList;
-            probando["payResume"] = payResume;
-            res.json(probando);
+            OutStockList = body;
+            OutStockList["productsList"] = productsList;
+            OutStockList["payResume"] = payResume;
+            res.status(403).json(OutStockList);
         }
         body.userId = parseInt(body.userId);
         const preOrder = Object.assign(Object.assign({}, body), { payResume: JSON.stringify({
