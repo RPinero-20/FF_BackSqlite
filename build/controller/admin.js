@@ -148,7 +148,20 @@ const deleteProducts = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.deleteProducts = deleteProducts;
 const getUsuarios = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const usuarios = yield admin_2.adminUsers.findAll();
-    res.json(usuarios);
+    const usuariosActualizados = usuarios.map((usuario) => {
+        return {
+            id: usuario.dataValues.id,
+            name: usuario.dataValues.name || '',
+            idNumber: usuario.dataValues.idNumber || '',
+            email: usuario.dataValues.email || '',
+            phone: usuario.dataValues.phone || '',
+            status: usuario.dataValues.status,
+            job: usuario.dataValues.job || '',
+            department: usuario.dataValues.department || '',
+            address: usuario.dataValues.address || ''
+        };
+    });
+    res.json(usuariosActualizados);
 });
 exports.getUsuarios = getUsuarios;
 const getUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
