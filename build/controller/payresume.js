@@ -106,6 +106,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     orderNumber: body.orderId
                 }
             });
+            console.log("::::::::::::::: EXIST ORDER::::::: ", existOrder);
             if (existOrder) {
                 res.status(403).json(Object.assign(Object.assign({}, body), { productsList: [] }));
             }
