@@ -200,7 +200,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     totalUsd: payResume.totalUsd,
                 };
                 const orderSaved = yield buyListConfirm_1.orderDetailConfirmedModel.create(orderData);
-                res.status(201).json({ msg: "Pedido recibido." });
+                res.status(201).end();
                 function deletePreOrderByUserId(userId) {
                     return __awaiter(this, void 0, void 0, function* () {
                         const deletePreOrder = yield payResume_1.cartListpreOrder.findOne({
@@ -275,7 +275,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 const existProduct = body;
                 existProduct["productsList"] = [];
                 existProduct["payResume"] = payResume;
-                res.status(201).json(existProduct);
+                res.status(200).json(existProduct);
             }
             else {
                 const productsList = [];
