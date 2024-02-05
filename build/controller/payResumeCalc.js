@@ -9,37 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkStock = exports.calcularDescuentoGlobal = exports.calcularDescuentoProducto = exports.calcProducts = exports.getPayResumeCalc = void 0;
+exports.checkStock = exports.calcularDescuentoGlobal = exports.calcularDescuentoProducto = exports.calcProducts = void 0;
 const payResume_1 = require("../models/payResume");
-class getPayResumeCalc {
-    constructor(_precio, _descuento) {
-        this.productos = [];
-        console.log(this.productos);
-    }
-    agregarProducto(precio, porcentajeDescuento) {
-        this.productos.push({
-            precio: precio,
-            descuento: porcentajeDescuento,
-        });
-        console.log(this.productos);
-    }
-    calcularDescuentoProducto(precio, porcentajeDescuento) {
-        const descuento = precio * (porcentajeDescuento / 100);
-        const precioConDescuento = precio - descuento;
-        console.log(precioConDescuento);
-        return precioConDescuento;
-    }
-    calcularDescuentoGlobal() {
-        let totalDescuento = 0;
-        for (let producto of this.productos) {
-            const precioConDescuento = this.calcularDescuentoProducto(producto.precio, producto.descuento);
-            const descuentoAplicado = producto.precio - precioConDescuento;
-            totalDescuento += descuentoAplicado;
-        }
-        return totalDescuento;
-    }
-}
-exports.getPayResumeCalc = getPayResumeCalc;
 function calcProducts(orderRequest) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = orderRequest;
