@@ -15,7 +15,7 @@ const productsList = "/productsList";
 const productDetail = "/productDetail";
 const payresume = "/payresume";
 const buyListConfirm = "/buyListConfirm";
-const getAddress = "/getAddress/:id";
+const getAddress = "/addressConfirmation/:id";
 clientRouter.use((_req, _res, next) => {
     (0, connect_1.conectToDB)();
     next();
