@@ -9,8 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductList = exports.getProducts = void 0;
+exports.getProductList = exports.getProducts = exports.getNotFound = void 0;
 const home_1 = require("../models/home");
+const getNotFound = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(404);
+});
+exports.getNotFound = getNotFound;
 function getHomeSections() {
     return __awaiter(this, void 0, void 0, function* () {
         const sectionsFromDB = yield home_1.sectionsHome.findAll();
