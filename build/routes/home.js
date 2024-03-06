@@ -35,7 +35,7 @@ clientRouter.get(userAuthInfo, (_req, res) => {
         const secretKey = "la_clave_secreta";
         const token = jsonwebtoken_1.default.sign(payload, secretKey, { expiresIn: "1h" });
         res.setHeader("Authorization", `Bearer ${token}`);
-        res.json({ message: "Token de invitado generado y enviado en el encabezado" });
+        res.json({ isLogged: false });
     }
     catch (error) {
         res.status(500).json({ error: "Error al generar el token de invitado" });
