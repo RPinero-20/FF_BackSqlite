@@ -14,7 +14,7 @@ class Server {
             admin: '/api/admin',
         };
         this.app = (0, express_1.default)();
-        this.port = process.env.PORT || '8000';
+        this.port = process.env.PORT || '443';
         this.middlewares();
         this.routes();
     }

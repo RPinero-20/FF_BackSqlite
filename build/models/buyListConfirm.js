@@ -29,7 +29,7 @@ exports.orderDetailConfirmedModel = connect_1.default.define('ff_order_detail', 
     bank: {
         type: sequelize_typescript_1.DataType.STRING
     },
-    addressArrival: {
+    shippingAddress: {
         type: sequelize_typescript_1.DataType.STRING
     },
     depositorName: {

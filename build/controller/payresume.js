@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAddressArrival = exports.getPayResume = void 0;
+exports.getshippingAddress = exports.getPayResume = void 0;
 const payResume_1 = require("../models/payResume");
 const payResumeCalc_1 = require("./payResumeCalc");
 const usuario_1 = require("../models/usuario");
@@ -171,7 +171,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                         payNumber: 0,
                         isOrderPaid: false,
                         bank: '',
-                        addressArrival: '',
+                        shippingAddress: '',
                         depositorName: '',
                         depositorPhone: '',
                         subtotal: payResume.subtotal,
@@ -211,18 +211,24 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getPayResume = getPayResume;
-const getAddressArrival = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    try {
-        const addressArrival = yield usuario_1.Clients.findByPk(id);
-        res.json({ "Address": addressArrival === null || addressArrival === void 0 ? void 0 : addressArrival.dataValues.address });
-    }
-    catch (error) {
-        console.error(error);
-        res.status(500).json({
-            msg: 'Error interno contacte al administrador.'
-        });
+const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const params = req.query;
+    console.log(params.id);
+    if (params !== undefined) {
+        if (params.hasOwnProperty('id') === true) {
+            try {
+                const shippingAddress = yield usuario_1.Clients.findByPk(params.id);
+                console.log(shippingAddress === null || shippingAddress === void 0 ? void 0 : shippingAddress.dataValues.address);
+                res.json({ "shippingAddress": shippingAddress === null || shippingAddress === void 0 ? void 0 : shippingAddress.dataValues.address });
+            }
+            catch (error) {
+                console.error(error);
+                res.status(500).json({
+                    msg: 'Error interno contacte al administrador.'
+                });
+            }
+        }
     }
 });
-exports.getAddressArrival = getAddressArrival;
+exports.getshippingAddress = getshippingAddress;
 //# sourceMappingURL=payresume.js.map
