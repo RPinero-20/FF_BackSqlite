@@ -48,6 +48,7 @@ clientRouter.get(productsList, productsList_1.getFnToFind);
 clientRouter.get(productDetail, productDetail_1.getProductDetail);
 clientRouter.post(payresume, payresume_1.getPayResume);
 clientRouter.put(payresume, payresume_1.getPayResume);
+clientRouter.put(getAddress, payresume_1.putShippingAddress);
 clientRouter.get(getAddress, payresume_1.getshippingAddress);
 clientRouter.post(buyListConfirm, buyListConfirm_1.postBuyList);
 exports.default = clientRouter;

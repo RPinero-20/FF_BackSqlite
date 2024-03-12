@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getshippingAddress = exports.getPayResume = void 0;
+exports.putShippingAddress = exports.getshippingAddress = exports.getPayResume = void 0;
 const payResume_1 = require("../models/payResume");
 const payResumeCalc_1 = require("./payResumeCalc");
 const usuario_1 = require("../models/usuario");
@@ -231,4 +231,35 @@ const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getshippingAddress = getshippingAddress;
+function updateShippingAddress(clientID, orderData, newShippingAddress) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress }, {
+            where: {
+                userId: parseInt(clientID),
+                orderNumber: orderData
+            }
+        });
+        return updatedOrder;
+    });
+}
+const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const params = req.query;
+    const { body } = req;
+    if (body !== undefined) {
+        const clientID = body.id;
+        const orderData = body.orderNumber;
+        const newAddr = body.shippingAddress;
+        try {
+            yield updateShippingAddress(clientID, orderData, newAddr);
+            return res.status(201).end();
+        }
+        catch (error) {
+            return res.status(404).json({ error: 'Error, no existe Número de orden.' });
+        }
+    }
+    else {
+        return res.status(400).json({ error: 'Missing parameters' });
+    }
+});
+exports.putShippingAddress = putShippingAddress;
 //# sourceMappingURL=payresume.js.map
