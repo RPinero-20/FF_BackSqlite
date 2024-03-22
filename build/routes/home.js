@@ -21,6 +21,7 @@ const productDetail = "/productDetail";
 const payresume = "/payresume";
 const buyListConfirm = "/buyListConfirm";
 const getAddress = "/addressConfirmation";
+const lastConfirmation = "/lastConfirmationOrder";
 const userInfo = "/userInfo";
 const userAuthInfo = "/userAuthInfo";
 clientRouter.use((_req, _res, next) => {
@@ -50,6 +51,7 @@ clientRouter.post(payresume, payresume_1.getPayResume);
 clientRouter.put(payresume, payresume_1.getPayResume);
 clientRouter.put(getAddress, payresume_1.putShippingAddress);
 clientRouter.get(getAddress, payresume_1.getshippingAddress);
+clientRouter.get(lastConfirmation, payresume_1.getFinishedOrder);
 clientRouter.post(buyListConfirm, buyListConfirm_1.postBuyList);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map

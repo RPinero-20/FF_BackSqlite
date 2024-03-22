@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.putShippingAddress = exports.getshippingAddress = exports.getPayResume = void 0;
+exports.getFinishedOrder = exports.putShippingAddress = exports.getshippingAddress = exports.getPayResume = void 0;
 const payResume_1 = require("../models/payResume");
 const payResumeCalc_1 = require("./payResumeCalc");
 const usuario_1 = require("../models/usuario");
@@ -22,6 +22,17 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
     }
     try {
+        let currencyValue;
+        if (body.currency === "bsd") {
+            currencyValue = 1;
+            console.log(body);
+        }
+        else {
+            currencyValue = 0;
+            console.log(body);
+        }
+        body.currency = currencyValue;
+        console.log(body);
         if (body.orderId.length === 0) {
             const orderRequest = body;
             const listObjects = yield (0, payResumeCalc_1.calcProducts)(orderRequest);
@@ -127,7 +138,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             else {
                 const existOrder = yield buyListConfirm_1.orderDetailConfirmedModel.findOne({
                     where: {
-                        orderNumber: body.orderId
+                        orderId: body.orderId
                     }
                 });
                 if (existOrder) {
@@ -164,16 +175,28 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     const quoteOrder = listObjects.preOrder;
                     body.userId = parseInt(body.userId);
                     const payResume = quoteOrder.payResume;
+                    let currencyValue;
+                    if (body.currency === "bsd") {
+                        currencyValue = 1;
+                        console.log(body);
+                    }
+                    else {
+                        currencyValue = 0;
+                        console.log(body);
+                    }
+                    body.currency = currencyValue;
                     const orderData = {
                         userId: body.userId,
                         productsList: JSON.stringify(body.productsList),
-                        orderNumber: body.orderId,
+                        orderId: body.orderId,
+                        isOrderConfirmed: body.isOrderConfirmed,
                         payNumber: 0,
                         isOrderPaid: false,
                         bank: '',
                         shippingAddress: '',
                         depositorName: '',
                         depositorPhone: '',
+                        currency: body.currency,
                         subtotal: payResume.subtotal,
                         discount: payResume.discount,
                         ivaUsd: payResume.ivaUsd,
@@ -231,12 +254,12 @@ const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getshippingAddress = getshippingAddress;
-function updateShippingAddress(clientID, orderData, newShippingAddress) {
+function updateShippingAddress(clientID, orderId, newShippingAddress) {
     return __awaiter(this, void 0, void 0, function* () {
         const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress }, {
             where: {
                 userId: parseInt(clientID),
-                orderNumber: orderData
+                orderId: orderId
             }
         });
         return updatedOrder;
@@ -247,10 +270,10 @@ const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     const { body } = req;
     if (body !== undefined) {
         const clientID = body.id;
-        const orderData = body.orderNumber;
+        const orderId = body.orderId;
         const newAddr = body.shippingAddress;
         try {
-            yield updateShippingAddress(clientID, orderData, newAddr);
+            yield updateShippingAddress(clientID, orderId, newAddr);
             return res.status(201).end();
         }
         catch (error) {
@@ -262,4 +285,69 @@ const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.putShippingAddress = putShippingAddress;
+function findPayResume(clientID, orderId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const orderDetail = yield payResume_1.cartListOrderDetailModel.findOne({
+            where: {
+                userId: clientID,
+                orderId: orderId
+            }
+        });
+        return orderDetail;
+    });
+}
+function findProductsWishList(wishProductList) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const productList = [];
+        for (const wishProduct of wishProductList) {
+            const productId = parseInt(wishProduct.productId);
+            const product = yield buyListConfirm_1.lastBuyListConfirmedModel.findByPk(productId);
+            if (product) {
+                const arrayTemporal = {
+                    id: product.dataValues.id,
+                    imageUrl: product.dataValues.imageUrl,
+                    name: product.dataValues.name,
+                    code: product.dataValues.code,
+                    price: product.dataValues.price,
+                    quantity: wishProduct.quantity
+                };
+                productList.push(arrayTemporal);
+            }
+        }
+        return productList;
+    });
+}
+const getFinishedOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req;
+    if (body !== undefined) {
+        const clientID = body.userId;
+        const orderId = body.orderId;
+        try {
+            const orderDetail = yield findPayResume(clientID, orderId);
+            const payResume = {
+                currency: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.currency,
+                subtotal: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.subTotal,
+                discount: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.discount,
+                ivaUsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.ivaUsd,
+                igtf: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.igtf,
+                totalBsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.totalBsd,
+                totalUsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.totalUsd
+            };
+            const shippingAddress = orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.shippingAddress;
+            const wishProductList = orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.productsList;
+            const procesedProductList = yield findProductsWishList(JSON.parse(wishProductList));
+            const productList = procesedProductList;
+            return res.status(200).json({ payResume, shippingAddress, productList });
+        }
+        catch (error) {
+            console.log("Error al obtener orderDetail");
+            return res.status(400).json({ error: 'Error retrieving order detail' });
+        }
+    }
+    else {
+        console.log("Pay resume not found");
+        return res.status(404).json({ error: 'Pay resume not found' });
+    }
+});
+exports.getFinishedOrder = getFinishedOrder;
 //# sourceMappingURL=payresume.js.map

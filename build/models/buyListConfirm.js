@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderProductsConfirmedModel = exports.buyListConfirm = exports.orderDetailConfirmedModel = void 0;
+exports.orderProductsConfirmedModel = exports.lastBuyListConfirmedModel = exports.buyListConfirm = exports.orderDetailConfirmedModel = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const connect_1 = __importDefault(require("../db/connect"));
-exports.orderDetailConfirmedModel = connect_1.default.define('ff_order_detail', {
+exports.orderDetailConfirmedModel = connect_1.default.define('ff_order_details', {
     id: {
         primaryKey: true,
         type: sequelize_typescript_1.DataType.NUMBER
@@ -17,7 +17,7 @@ exports.orderDetailConfirmedModel = connect_1.default.define('ff_order_detail', 
     productsList: {
         type: sequelize_typescript_1.DataType.STRING
     },
-    orderNumber: {
+    orderId: {
         type: sequelize_typescript_1.DataType.STRING
     },
     payNumber: {
@@ -36,6 +36,9 @@ exports.orderDetailConfirmedModel = connect_1.default.define('ff_order_detail', 
         type: sequelize_typescript_1.DataType.STRING
     },
     depositorPhone: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
+    currency: {
         type: sequelize_typescript_1.DataType.STRING
     },
     subtotal: {
@@ -85,6 +88,24 @@ exports.buyListConfirm = connect_1.default.define('ff_products', {
     price: {
         type: sequelize_typescript_1.DataType.DECIMAL
     },
+});
+exports.lastBuyListConfirmedModel = connect_1.default.define('ff_products', {
+    id: {
+        primaryKey: true,
+        type: sequelize_typescript_1.DataType.STRING
+    },
+    imageUrl: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
+    name: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
+    code: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
+    price: {
+        type: sequelize_typescript_1.DataType.STRING
+    }
 });
 exports.orderProductsConfirmedModel = connect_1.default.define('ff_products', {
     id: {
