@@ -325,6 +325,7 @@ const getFinishedOrder = (req, res) => __awaiter(void 0, void 0, void 0, functio
         try {
             const orderDetail = yield findPayResume(clientID, orderId);
             const payResume = {
+                currency: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.currency,
                 subtotal: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.subTotal,
                 discount: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.discount,
                 ivaUsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.ivaUsd,
@@ -332,6 +333,16 @@ const getFinishedOrder = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 totalBsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.totalBsd,
                 totalUsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.totalUsd
             };
+            let currencyValue;
+            if (payResume.currency === '1') {
+                currencyValue = 'bsd';
+                console.log(body);
+            }
+            else {
+                currencyValue = 'usd';
+                console.log(body);
+            }
+            payResume.currency = currencyValue;
             const shippingAddress = orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.shippingAddress;
             const wishProductList = orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.productsList;
             const procesedProductList = yield findProductsWishList(JSON.parse(wishProductList));
