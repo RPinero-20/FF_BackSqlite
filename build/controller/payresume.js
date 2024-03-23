@@ -325,7 +325,6 @@ const getFinishedOrder = (req, res) => __awaiter(void 0, void 0, void 0, functio
         try {
             const orderDetail = yield findPayResume(clientID, orderId);
             const payResume = {
-                currency: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.currency,
                 subtotal: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.subTotal,
                 discount: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.discount,
                 ivaUsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.ivaUsd,

@@ -47,7 +47,6 @@ function calcProducts(orderRequest) {
         const totalImpuesto = igtf * 0.16;
         const totalUsd = subtotal + totalImpuesto;
         const payResume = {
-            currency: body.currency,
             subtotal: parseFloat(subtotal.toFixed(2)),
             discount: totalDescuentoPorProducto,
             ivaUsd: 16,
