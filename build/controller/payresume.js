@@ -263,29 +263,30 @@ function updateShippingAddress(clientID, orderID, newShippingAddress) {
                 orderId: orderID
             }
         });
-        console.log("orderToUpdate::::::::::: ", orderToUpdate);
-        const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress }, {
-            where: {
-                userId: parseInt(clientID),
-                orderId: orderID
-            }
-        });
-        console.log("updatedOrder ::::::::: ", updatedOrder);
-        return updatedOrder;
+        if (!orderToUpdate) {
+            return false;
+        }
+        else {
+            const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress }, {
+                where: {
+                    userId: parseInt(clientID),
+                    orderId: orderID
+                }
+            });
+            console.log("updatedOrder ::::::::: ", updatedOrder);
+            return updatedOrder;
+        }
     });
 }
 const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const params = req.query;
     const { body } = req;
     if (body !== undefined) {
-        const clientID = body.id;
+        const userId = body.id;
         const orderId = body.orderId;
         const newAddr = body.shippingAddress;
-        console.log("putShippingAddress PARAMS ::::::::::: ", params);
-        console.log("putShippingAddress BODY ::::::::::: ", body);
-        console.log(clientID, orderId, newAddr);
         try {
-            yield updateShippingAddress(clientID, orderId, newAddr);
+            yield updateShippingAddress(userId, orderId, newAddr);
             return res.status(201).end();
         }
         catch (error) {
@@ -297,11 +298,10 @@ const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.putShippingAddress = putShippingAddress;
-function findPayResume(clientID, orderId) {
+function findPayResume(orderId) {
     return __awaiter(this, void 0, void 0, function* () {
         const orderDetail = yield payResume_1.cartListOrderDetailModel.findOne({
             where: {
-                userId: clientID,
                 orderId: orderId
             }
         });
@@ -326,16 +326,17 @@ function findProductsWishList(wishProductList) {
                 productList.push(arrayTemporal);
             }
         }
+        console.log(productList);
         return productList;
     });
 }
 const getFinishedOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body } = req.body;
+    const test = req.query;
+    const body = test.orderId;
     if (body !== undefined) {
         try {
-            const clientID = body.userId;
-            const orderId = body.orderId;
-            const orderDetail = yield findPayResume(clientID, orderId);
+            const orderId = body;
+            const orderDetail = yield findPayResume(orderId);
             const payResume = {
                 currency: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.currency,
                 subtotal: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.subTotal,
