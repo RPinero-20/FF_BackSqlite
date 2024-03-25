@@ -254,19 +254,20 @@ const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getshippingAddress = getshippingAddress;
-function updateShippingAddress(clientID, orderId, newShippingAddress) {
+function updateShippingAddress(clientID, orderID, newShippingAddress) {
     return __awaiter(this, void 0, void 0, function* () {
-        const orderToUpdate = yield payResume_1.cartListOrderDetailModel.findOne({
+        console.log("POR AQUI VA!!!!!!!!", clientID, orderID, newShippingAddress);
+        const orderToUpdate = yield buyListConfirm_1.orderDetailConfirmedModel.findOne({
             where: {
-                clientID: clientID,
-                orderId: orderId
+                userId: clientID,
+                orderId: orderID
             }
         });
         console.log("orderToUpdate::::::::::: ", orderToUpdate);
         const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress }, {
             where: {
                 userId: parseInt(clientID),
-                orderId: orderId
+                orderId: orderID
             }
         });
         console.log("updatedOrder ::::::::: ", updatedOrder);
@@ -285,7 +286,7 @@ const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
         console.log(clientID, orderId, newAddr);
         try {
             yield updateShippingAddress(clientID, orderId, newAddr);
-            return res.status(201);
+            return res.status(201).end();
         }
         catch (error) {
             return res.status(404).json({ error: 'Error, no existe Número de orden.' });
