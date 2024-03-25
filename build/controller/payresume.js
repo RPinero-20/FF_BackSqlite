@@ -236,7 +236,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getPayResume = getPayResume;
 const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const params = req.query;
-    console.log(params.id);
+    console.log("PARAMS :::::::::: ", params);
     if (params !== undefined) {
         if (params.hasOwnProperty('id') === true) {
             try {
@@ -256,12 +256,20 @@ const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
 exports.getshippingAddress = getshippingAddress;
 function updateShippingAddress(clientID, orderId, newShippingAddress) {
     return __awaiter(this, void 0, void 0, function* () {
+        const orderToUpdate = yield payResume_1.cartListOrderDetailModel.findOne({
+            where: {
+                clientID: clientID,
+                orderId: orderId
+            }
+        });
+        console.log("orderToUpdate::::::::::: ", orderToUpdate);
         const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress }, {
             where: {
                 userId: parseInt(clientID),
                 orderId: orderId
             }
         });
+        console.log("updatedOrder ::::::::: ", updatedOrder);
         return updatedOrder;
     });
 }
@@ -272,9 +280,12 @@ const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const clientID = body.id;
         const orderId = body.orderId;
         const newAddr = body.shippingAddress;
+        console.log("putShippingAddress PARAMS ::::::::::: ", params);
+        console.log("putShippingAddress BODY ::::::::::: ", body);
+        console.log(clientID, orderId, newAddr);
         try {
             yield updateShippingAddress(clientID, orderId, newAddr);
-            return res.status(201).end();
+            return res.status(201);
         }
         catch (error) {
             return res.status(404).json({ error: 'Error, no existe Número de orden.' });
@@ -318,11 +329,11 @@ function findProductsWishList(wishProductList) {
     });
 }
 const getFinishedOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body } = req;
+    const { body } = req.body;
     if (body !== undefined) {
-        const clientID = body.userId;
-        const orderId = body.orderId;
         try {
+            const clientID = body.userId;
+            const orderId = body.orderId;
             const orderDetail = yield findPayResume(clientID, orderId);
             const payResume = {
                 currency: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.currency,
