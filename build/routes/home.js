@@ -19,7 +19,6 @@ const categories = "/categories";
 const productsList = "/productsList";
 const productDetail = "/productDetail";
 const payresume = "/payresume";
-const buyListConfirm = "/buyListConfirm";
 const getAddress = "/addressConfirmation";
 const lastConfirmation = "/lastConfirmationOrder";
 const paymentDetail = "/paymentDetail";
@@ -53,8 +52,7 @@ clientRouter.put(payresume, payresume_1.getPayResume);
 clientRouter.put(getAddress, payresume_1.putShippingAddress);
 clientRouter.get(getAddress, payresume_1.getshippingAddress);
 clientRouter.get(lastConfirmation, payresume_1.getFinishedOrder);
-clientRouter.put(paymentDetail, buyListConfirm_1.putOrderConfirmed);
+clientRouter.put(lastConfirmation, buyListConfirm_1.putOrderConfirmed);
 clientRouter.get(paymentDetail, buyListConfirm_1.getPaymentDetail);
-clientRouter.post(buyListConfirm, buyListConfirm_1.postBuyList);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map

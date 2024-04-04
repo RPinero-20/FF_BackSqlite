@@ -12,16 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postBuyList = exports.getPaymentDetail = exports.putOrderConfirmed = void 0;
 const buyListConfirm_1 = require("../models/buyListConfirm");
 const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body } = req;
-    const findOrderId = body.orderId;
-    if (body != undefined) {
+    const body = req.body;
+    const orderId = req.query;
+    const findOrderId = orderId;
+    if (orderId != undefined) {
         try {
             const existOrder = yield buyListConfirm_1.isOrderConfirmedModel.findOne({
                 where: {
-                    orderId: findOrderId
+                    orderId: findOrderId.orderId
                 }
             });
-            if (!existOrder) {
+            if (!(existOrder === null || existOrder === void 0 ? void 0 : existOrder.dataValues.orderId)) {
                 res.status(404).json({
                     msg: 'No se encuentra la orden de compra. Contacte con el proveedor. '
                 });
@@ -36,10 +37,11 @@ const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
                     orderId: existOrder.dataValues.orderId,
                     isOrderConfirmed: isConfirmed
                 };
+                console.log("linea 31::: ", orderConfirmed);
                 yield buyListConfirm_1.isOrderConfirmedModel.update(orderConfirmed, { where: {
-                        orderId: findOrderId
+                        orderId: existOrder.dataValues.orderId,
                     } });
-                res.status(201).json({ msg: "OK" });
+                res.status(201).end();
             }
         }
         catch (error) {
@@ -99,6 +101,7 @@ const postBuyList = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.json({ msg: "OK" });
     }
     catch (_a) {
+        res.status(400).send("Error en buyListConfirm postBuyList function");
     }
 });
 exports.postBuyList = postBuyList;
