@@ -53,15 +53,16 @@ const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.putOrderConfirmed = putOrderConfirmed;
 const getPaymentDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const orderId = req.query;
-    console.log(orderId);
+    let userId = req.query.id;
+    console.log(userId);
     try {
-        if (orderId != undefined) {
+        if (userId != undefined) {
             const paymentData = yield buyListConfirm_1.orderPayModel.findOne({
                 where: {
-                    orderId: orderId.orderId
+                    userId: userId
                 }
             });
+            console.log(":::::::::::... ", paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues);
             let totalPay = (paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.currency) === 1 ? paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalUsd : paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalBsd;
             const companyDetails = yield buyListConfirm_1.companyDetailsModel.findAll();
             const bankList = yield buyListConfirm_1.paymentDetailsModel.findAll();
@@ -70,6 +71,7 @@ const getPaymentDetail = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 totalPay: totalPay,
                 companyName: companyDetails[0].dataValues.name,
                 companyRif: companyDetails[0].dataValues.rif,
+                downloadInvoice: 'PROBANDO',
                 bankList: bankList.map((bank) => ({
                     bankName: bank.dataValues.bankName,
                     bankAccount: bank.dataValues.bankAccount
