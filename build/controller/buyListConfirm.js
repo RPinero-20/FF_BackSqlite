@@ -62,7 +62,7 @@ const getPaymentDetail = (req, res) => __awaiter(void 0, void 0, void 0, functio
                     userId: userId
                 }
             });
-            console.log(":::::::::::... ", paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues);
+            console.log("getPaymentDetail :::::::::::... ", paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues);
             let totalPay = (paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.currency) === 1 ? paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalUsd : paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalBsd;
             const companyDetails = yield buyListConfirm_1.companyDetailsModel.findAll();
             const bankList = yield buyListConfirm_1.paymentDetailsModel.findAll();

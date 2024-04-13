@@ -74,6 +74,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 const quoteOrder = listObjects.preOrder;
                 body.userId = parseInt(body.userId);
                 const payResume = quoteOrder.payResume;
+                console.log("PAYRESUME :::::::: ", payResume);
                 const orderToReturn = {
                     productsList: [],
                     payResume: payResume
@@ -236,7 +237,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getPayResume = getPayResume;
 const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const params = req.query;
-    console.log("PARAMS :::::::::: ", params);
+    console.log("getShippingAddress PARAMS :::::::::: ", params);
     if (params !== undefined) {
         if (params.hasOwnProperty('id') === true) {
             try {
@@ -337,9 +338,10 @@ const getFinishedOrder = (req, res) => __awaiter(void 0, void 0, void 0, functio
         try {
             const orderId = body;
             const orderDetail = yield findPayResume(orderId);
+            console.log("getFinishedOrder: orderDetail ::::::::: ", orderDetail);
             const payResume = {
                 currency: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.currency,
-                subtotal: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.subTotal,
+                subtotal: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.subtotal,
                 discount: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.discount,
                 ivaUsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.ivaUsd,
                 igtf: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.igtf,
