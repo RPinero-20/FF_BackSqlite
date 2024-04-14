@@ -349,15 +349,16 @@ const getFinishedOrder = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 totalUsd: orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.totalUsd
             };
             let currencyValue;
-            if (payResume.currency === '1') {
+            if (payResume.currency.toString() === '1') {
                 currencyValue = 'bsd';
-                console.log(body);
+                console.log("Deberia ser BSD ::::::::::::::::::::::", payResume.currency);
             }
             else {
                 currencyValue = 'usd';
-                console.log(body);
+                console.log("Deberia ser USD ::::::::::::::::::::::", payResume.currency);
             }
             payResume.currency = currencyValue;
+            console.log("<<<<<<<<<< PayResume >>>>>>>>>> ", payResume);
             const shippingAddress = orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.shippingAddress;
             const wishProductList = orderDetail === null || orderDetail === void 0 ? void 0 : orderDetail.dataValues.productsList;
             const procesedProductList = yield findProductsWishList(JSON.parse(wishProductList));
