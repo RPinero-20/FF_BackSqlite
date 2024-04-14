@@ -15,6 +15,7 @@ const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
     const body = req.body;
     const orderId = req.query;
     const findOrderId = orderId;
+    console.log("putOrderConfirmed body ::::::::::: ", body);
     if (orderId != undefined) {
         try {
             const existOrder = yield buyListConfirm_1.isOrderConfirmedModel.findOne({
@@ -30,7 +31,7 @@ const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
             }
             else {
                 let isConfirmed = 0;
-                if (existOrder.dataValues.isOrderConfirmed == 0) {
+                if (existOrder.dataValues.isOrderConfirmed !== 0) {
                     isConfirmed = 1;
                 }
                 const orderConfirmed = {
@@ -54,7 +55,7 @@ const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.putOrderConfirmed = putOrderConfirmed;
 const getPaymentDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let userId = req.query.id;
-    console.log(userId);
+    console.log("getPaymentDetail USERID :::::::: ", userId);
     try {
         if (userId != undefined) {
             const paymentData = yield buyListConfirm_1.orderPayModel.findOne({
@@ -62,7 +63,7 @@ const getPaymentDetail = (req, res) => __awaiter(void 0, void 0, void 0, functio
                     userId: userId
                 }
             });
-            console.log("getPaymentDetail :::::::::::... ", paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues);
+            console.log("getPaymentDetail paymentData :::::::::::... ", paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues);
             let totalPay = (paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.currency) === 1 ? paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalUsd : paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalBsd;
             const companyDetails = yield buyListConfirm_1.companyDetailsModel.findAll();
             const bankList = yield buyListConfirm_1.paymentDetailsModel.findAll();
