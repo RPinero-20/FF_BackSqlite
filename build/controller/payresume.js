@@ -32,7 +32,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             console.log(body);
         }
         body.currency = currencyValue;
-        console.log(body);
+        console.log("getPayResume body::::::::::: ", body);
         if (body.orderId.length === 0) {
             const orderRequest = body;
             const listObjects = yield (0, payResumeCalc_1.calcProducts)(orderRequest);
@@ -176,16 +176,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     const quoteOrder = listObjects.preOrder;
                     body.userId = parseInt(body.userId);
                     const payResume = quoteOrder.payResume;
-                    let currencyValue;
-                    if (body.currency === "bsd") {
-                        currencyValue = 1;
-                        console.log(body);
-                    }
-                    else {
-                        currencyValue = 0;
-                        console.log(body);
-                    }
-                    body.currency = currencyValue;
+                    console.log("Quizás :::::::: payResume, body ", payResume, body);
                     const orderData = {
                         userId: body.userId,
                         productsList: JSON.stringify(body.productsList),
