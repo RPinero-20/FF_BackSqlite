@@ -64,11 +64,13 @@ const getPaymentDetail = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 }
             });
             console.log("getPaymentDetail paymentData :::::::::::... ", paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues);
-            let totalPay = (paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.currency) === 1 ? paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalUsd : paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalBsd;
+            let totalPay = (paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.currency) === 0 ? paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalUsd : paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.totalBsd;
+            let currency = (paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.currency) === 0 ? 'usd' : 'bsd';
             const companyDetails = yield buyListConfirm_1.companyDetailsModel.findAll();
             const bankList = yield buyListConfirm_1.paymentDetailsModel.findAll();
             const paymentDetails = {
                 orderId: paymentData === null || paymentData === void 0 ? void 0 : paymentData.dataValues.orderId,
+                currency: currency,
                 totalPay: totalPay,
                 companyName: companyDetails[0].dataValues.name,
                 companyRif: companyDetails[0].dataValues.rif,
