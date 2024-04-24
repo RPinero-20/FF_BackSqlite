@@ -11,6 +11,7 @@ const categories_1 = require("../controller/categories");
 const productsList_1 = require("../controller/productsList");
 const payresume_1 = require("../controller/payresume");
 const buyListConfirm_1 = require("../controller/buyListConfirm");
+const userListOrders_1 = require("../controller/userListOrders");
 const clientAcces_1 = require("../controller/clientAcces");
 const connect_1 = require("../db/connect");
 const clientRouter = (0, express_1.Router)();
@@ -24,6 +25,7 @@ const lastConfirmation = "/lastConfirmationOrder";
 const paymentDetail = "/paymentDetail";
 const userInfo = "/userInfo";
 const userAuthInfo = "/userAuthInfo";
+const userOrders = "/userOrders";
 clientRouter.use((_req, _res, next) => {
     (0, connect_1.conectToDB)();
     next();
@@ -54,5 +56,6 @@ clientRouter.get(getAddress, payresume_1.getshippingAddress);
 clientRouter.get(lastConfirmation, payresume_1.getFinishedOrder);
 clientRouter.put(lastConfirmation, buyListConfirm_1.putOrderConfirmed);
 clientRouter.get(paymentDetail, buyListConfirm_1.getPaymentDetail);
+clientRouter.get(userOrders, userListOrders_1.getUserListOrders);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map
