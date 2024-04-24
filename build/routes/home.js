@@ -24,7 +24,7 @@ const payresume = "/payresume";
 const getAddress = "/addressConfirmation";
 const lastConfirmation = "/lastConfirmationOrder";
 const paymentDetail = "/paymentDetail";
-const bankListinformation = "/bankInformation";
+const paymentConfirmation = "/paymentConfirmation";
 const userInfo = "/userInfo";
 const userAuthInfo = "/userAuthInfo";
 const userOrders = "/userOrders";
@@ -59,6 +59,6 @@ clientRouter.get(lastConfirmation, payresume_1.getFinishedOrder);
 clientRouter.put(lastConfirmation, buyListConfirm_1.putOrderConfirmed);
 clientRouter.get(paymentDetail, buyListConfirm_1.getPaymentDetail);
 clientRouter.get(userOrders, userListOrders_1.getUserListOrders);
-clientRouter.get(bankListinformation, payConfirm_1.getBanksListInformation);
+clientRouter.get(paymentConfirmation, payConfirm_1.getBanksListInformation);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map
