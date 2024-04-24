@@ -11,6 +11,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserListOrders = void 0;
 const userListOrders_1 = require("../models/userListOrders");
+const buyListConfirm_1 = require("../models/buyListConfirm");
+function findProductsListsOrders(wishProductList) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const productList = [];
+        for (const wishProduct of wishProductList) {
+            const productId = parseInt(wishProduct.productId);
+            const product = yield buyListConfirm_1.lastBuyListConfirmedModel.findByPk(productId);
+            if (product) {
+                const arrayTemporal = {
+                    id: product.dataValues.id,
+                    imageUrl: product.dataValues.imageUrl,
+                    name: product.dataValues.name,
+                    code: product.dataValues.code,
+                    price: product.dataValues.price,
+                    quantity: wishProduct.quantity
+                };
+                productList.push(arrayTemporal);
+            }
+        }
+        return productList;
+    });
+}
 const getUserListOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.query;
     console.log(userId);
@@ -27,19 +49,20 @@ const getUserListOrders = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 return order;
             });
             console.log("::: getUserListOrders ::: ");
-            const transformedUserListOrders = userListOrders.map(order => {
+            const transformedUserListOrders = yield Promise.all(userListOrders.map((order) => __awaiter(void 0, void 0, void 0, function* () {
                 const currency = order.dataValues.currency === 0 ? 'Usd' : 'Bsd';
                 const totalPay = order.dataValues.currency === 0 ? order.dataValues.totalUsd : order.dataValues.totalBsd;
                 const isOrderPaid = order.dataValues.isOrderPaid === 0 ? 'Pendiente' : 'Pagado';
+                const updatedProductsList = yield findProductsListsOrders(order.dataValues.productsList);
                 return {
                     orderId: order.dataValues.orderId,
                     totalPay: totalPay,
                     currency: currency,
                     isOrderPaid: isOrderPaid,
                     lastUpdateDate: '',
-                    productsList: order.dataValues.productsList
+                    productsList: updatedProductsList
                 };
-            });
+            })));
             res.status(200).json(transformedUserListOrders);
         }
         catch (error) {

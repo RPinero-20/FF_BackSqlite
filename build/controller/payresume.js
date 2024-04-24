@@ -318,7 +318,6 @@ function findProductsWishList(wishProductList) {
                 productList.push(arrayTemporal);
             }
         }
-        console.log(productList);
         return productList;
     });
 }
