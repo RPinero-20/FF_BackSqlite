@@ -197,6 +197,18 @@ export interface userOrdersInterface {
     productsList: productListInterfaceData[],
 }
 
+export interface infoOrderDetailPrintInterface {
+        orderId: string,
+        updatedAt: string,
+        codes: string[],
+        name: string[],
+        quantity: number[],
+        prices: string[],
+        amounts: number[],
+        currency: string,
+        subtotal: string,
+        totalPay: string,
+}
 
 export type ClientURLS = '/home'
     | '/productDetail'
