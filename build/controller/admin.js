@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = exports.deleteProducts = exports.postProduct = exports.putProductToEdit = exports.getProductById = exports.getProducts = exports.getAdminSections = exports.getAdminCategories = void 0;
+exports.postLogin = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = exports.deleteProducts = exports.postProduct = exports.putProductToEdit = exports.getProductById = exports.getProducts = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -238,4 +238,31 @@ const deleteUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     res.json(usuario);
 });
 exports.deleteUsuario = deleteUsuario;
+const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    console.log(body);
+    const { userName, password } = body;
+    const email = 'arcaneJinx@correo.com';
+    const pass = '123456';
+    try {
+        if (userName === email && password === pass) {
+            res.status(200).json({
+                token: 'aafd0270-8358-4467-98da-d8c1df931d35',
+                userName: 'Jinx Fouler',
+                message: 'Usuario autenticado',
+            });
+        }
+        else {
+            res.status(403).json({
+                msg: 'Usuario o contraseña incorrectos'
+            });
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            msg: 'Comuníquese con el administrador.'
+        });
+    }
+});
+exports.postLogin = postLogin;
 //# sourceMappingURL=admin.js.map

@@ -16,6 +16,7 @@ const sections = '/sections';
 const users = '/users';
 const editUser = '/users/:id';
 const deleteUser = '/users/:id';
+const loginUser = '/login';
 adminRouter.use((_req, _res, next) => {
     (0, connect_1.conectToDB)();
     next();
@@ -31,5 +32,6 @@ adminRouter.post(users, admin_3.postUsuario);
 adminRouter.delete(deleteUser, admin_1.deleteUsuario);
 adminRouter.get(sections, admin_1.getAdminSections);
 adminRouter.get(categories, admin_2.getAdminCategories);
+adminRouter.post(loginUser, admin_3.postLogin);
 exports.default = adminRouter;
 //# sourceMappingURL=admin.js.map
