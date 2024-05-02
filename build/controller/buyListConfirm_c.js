@@ -105,7 +105,7 @@ const postBuyList = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         console.log(products);
         res.json({ msg: "OK" });
     }
-    catch (_a) {
+    catch (_q) {
         res.status(400).send("Error en buyListConfirm postBuyList function");
     }
 });

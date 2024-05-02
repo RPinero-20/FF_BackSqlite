@@ -16,7 +16,7 @@ function separarPalabras(cadena) {
     return cadena.replace(/([a-z])([A-Z])/g, '$1 $2');
 }
 const getFnToFind = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _q;
     const params = req.query;
     if (params !== undefined) {
         if (params.hasOwnProperty('category') === true) {
@@ -31,7 +31,7 @@ const getFnToFind = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         else {
             if (params.hasOwnProperty('search') === true) {
-                const searchName = (_a = params.search) !== null && _a !== void 0 ? _a : '';
+                const searchName = (_q = params.search) !== null && _q !== void 0 ? _q : '';
                 try {
                     res.json(yield getProductsByName(searchName));
                 }

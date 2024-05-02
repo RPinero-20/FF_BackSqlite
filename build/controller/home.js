@@ -87,7 +87,7 @@ const getProductList = (_req, res) => __awaiter(void 0, void 0, void 0, function
         }));
         res.json(productsList);
     }
-    catch (_a) {
+    catch (_q) {
         res.status(500).json({ msg: 'Internal Server Error' });
     }
 });

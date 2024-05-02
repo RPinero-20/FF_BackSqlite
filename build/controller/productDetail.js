@@ -13,12 +13,12 @@ exports.getProductDetail = void 0;
 const productDetail_1 = require("../models/productDetail");
 const home_1 = require("../models/home");
 const getProductDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _q;
     const params = req.query;
     if (params != undefined) {
         if (params.hasOwnProperty('id') === true && params.hasOwnProperty('code') === true) {
             const productID = Number(params.id);
-            const productCode = (_a = params.code) !== null && _a !== void 0 ? _a : '';
+            const productCode = (_q = params.code) !== null && _q !== void 0 ? _q : '';
             try {
                 res.json(yield getDetailByIDnCode(productID, productCode));
             }

@@ -64,7 +64,7 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
             });
         }
     }
-    catch (_a) {
+    catch (_q) {
         res.status(500).json({
             Error: 'Internal Server Error'
         });
