@@ -146,6 +146,14 @@ export interface adminUsersInterfaceModel {
     address: string
 }
 
+export interface adminLoginUserInterfaceModel {
+    userName: string,
+    password: string
+}
+
+export interface clientLoginUserInterfaceModel {
+
+}
 
 export interface isOrderConfirmedInterface {
     orderId: string,
@@ -234,4 +242,5 @@ export type AdminURLS = '/home'
     | '/categories'
     | '/sections'
     | '/users'
-    | '/users/:id';
+    | '/users/:id'
+    | '/login';
