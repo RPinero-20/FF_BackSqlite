@@ -250,6 +250,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 token: 'aafd0270-8358-4467-98da-d8c1df931d35',
                 userName: 'Jinx Fouler',
                 message: 'Usuario autenticado',
+                isLogged: 'True'
             });
         }
         else {
