@@ -42,7 +42,6 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const productList = yield admin_1.adminProducts.findAll();
         const productsAll = productList.map((product) => ({
-            id: product.dataValues.id,
             imageUrl: product.dataValues.imageUrl,
             name: product.dataValues.name,
             code: product.dataValues.code,
