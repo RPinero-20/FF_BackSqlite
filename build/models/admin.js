@@ -47,7 +47,7 @@ exports.adminCategory = connect_1.default.define('ff_categories', {
 exports.adminProducts = connect_1.default.define('ff_products', {
     id: {
         primaryKey: true,
-        type: sequelize_typescript_1.DataType.STRING
+        type: sequelize_typescript_1.DataType.NUMBER
     },
     imageUrl: {
         type: sequelize_typescript_1.DataType.STRING
@@ -74,10 +74,10 @@ exports.adminProducts = connect_1.default.define('ff_products', {
         type: sequelize_typescript_1.DataType.BOOLEAN
     },
     unitQty: {
-        type: sequelize_typescript_1.DataType.INTEGER
+        type: sequelize_typescript_1.DataType.NUMBER
     },
     unitPerBox: {
-        type: sequelize_typescript_1.DataType.INTEGER
+        type: sequelize_typescript_1.DataType.NUMBER
     },
     description: {
         type: sequelize_typescript_1.DataType.STRING
@@ -95,10 +95,10 @@ exports.adminProducts = connect_1.default.define('ff_products', {
         type: sequelize_typescript_1.DataType.NUMBER
     },
     categoryID: {
-        type: sequelize_typescript_1.DataType.INTEGER
+        type: sequelize_typescript_1.DataType.NUMBER
     },
     sectionID: {
-        type: sequelize_typescript_1.DataType.INTEGER
+        type: sequelize_typescript_1.DataType.NUMBER
     },
     price: {
         type: sequelize_typescript_1.DataType.DECIMAL

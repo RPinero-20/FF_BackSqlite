@@ -41,7 +41,29 @@ exports.getAdminSections = getAdminSections;
 const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const productList = yield admin_1.adminProducts.findAll();
-        res.json(productList);
+        const productsAll = productList.map((product) => ({
+            id: product.dataValues.id,
+            imageUrl: product.dataValues.imageUrl,
+            name: product.dataValues.name,
+            code: product.dataValues.code,
+            type: product.dataValues.type,
+            byWeight: product.dataValues.byWeight,
+            weightPerUnit: product.dataValues.weightPerUnit,
+            weightPerBox: product.dataValues.weightPerBox,
+            byUnit: product.dataValues.byUnit,
+            unitQty: product.dataValues.unitQty,
+            unitPerBox: product.dataValues.unitPerBox,
+            description: product.dataValues.description,
+            isOffer: product.dataValues.isOffer,
+            isFree: product.dataValues.isFree,
+            isOutStock: product.dataValues.isOutStock,
+            discount: product.dataValues.discount,
+            categoryID: product.dataValues.categoryID,
+            sectionID: product.dataValues.sectionID,
+            price: product.dataValues.price
+        }));
+        console.log(productsAll);
+        res.json(productsAll);
     }
     catch (error) {
         console.error(error);
