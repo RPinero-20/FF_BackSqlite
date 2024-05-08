@@ -8,8 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogin = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = exports.deleteProducts = exports.postProduct = exports.putProductToEdit = exports.getProductById = exports.getProducts = exports.getAdminSections = exports.getAdminCategories = void 0;
+exports.postLogin = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,6 +49,46 @@ const getAdminSections = (_req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getAdminSections = getAdminSections;
+const getToCreateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { body } = req.body;
+    if (body === undefined) {
+        try {
+            res.json({
+                imageUrl: "",
+                name: "",
+                code: "",
+                type: "",
+                byWeight: "",
+                weightPerUnit: "",
+                weightPerBox: "",
+                byUnit: "",
+                unitQty: "",
+                unitPerBox: "",
+                description: "",
+                isOffer: "",
+                isFree: "",
+                isOutStock: "",
+                discount: "",
+                categoryID: "",
+                sectionID: "",
+                price: "",
+            });
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).json({
+                error: ' Internal Server Error'
+            });
+        }
+    }
+    else {
+        res.status(400).json({
+            error: 'Bad Request'
+        });
+        return;
+    }
+});
+exports.getToCreateProduct = getToCreateProduct;
 const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const productList = yield admin_1.adminProducts.findAll();
@@ -72,27 +123,32 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getProducts = getProducts;
-const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+const getProductToEditDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const code = req.query.code;
     try {
-        const productDetail = yield admin_1.adminProducts.findByPk(id);
-        if (productDetail) {
+        const productToEdit = yield admin_1.adminProducts.findOne({
+            where: {
+                code: code
+            }
+        });
+        if (productToEdit) {
+            const _q = productToEdit.dataValues, { id } = _q, productDetail = __rest(_q, ["id"]);
             res.json(productDetail);
         }
         else {
             res.status(404).json({
-                msg: `Producto no encontrado: ${id} `,
+                msg: `Producto no encontrado: ${code}`,
             });
         }
     }
-    catch (_q) {
+    catch (error) {
+        console.error(error);
         res.status(500).json({
             Error: 'Internal Server Error'
         });
-        return;
     }
 });
-exports.getProductById = getProductById;
+exports.getProductToEditDetail = getProductToEditDetail;
 function getProductByCode(productCode) {
     return __awaiter(this, void 0, void 0, function* () {
         const productToEdit = yield admin_1.adminProducts.findOne({
@@ -103,19 +159,22 @@ function getProductByCode(productCode) {
         return productToEdit;
     });
 }
-const putProductToEdit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { code } = req.params;
+const putProductEdited = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const code = req.query.code;
     const { body } = req;
     try {
         const productToEdit = yield getProductByCode(code);
-        console.error(productToEdit);
         if (!productToEdit) {
             res.status(404).json({
                 Error: 'No existe Producto con Código: ' + code
             });
             return;
         }
-        yield productToEdit.update(body);
+        yield productToEdit.update(body, {
+            where: {
+                code: code
+            }
+        });
         res.json(productToEdit);
     }
     catch (error) {
@@ -125,7 +184,7 @@ const putProductToEdit = (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
 });
-exports.putProductToEdit = putProductToEdit;
+exports.putProductEdited = putProductEdited;
 const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     try {
@@ -135,7 +194,7 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             }
         });
         if (existCode) {
-            res.status(400).json({
+            res.status(403).json({
                 msg: 'Código de producto ya existe. ' + body.code
             });
             return;
@@ -151,22 +210,26 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.postProduct = postProduct;
-const deleteProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const deleteProduct = yield admin_1.adminProducts.findByPk(id);
-    if (!deleteProduct) {
+const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const code = req.query.code;
+    const existProduct = yield admin_1.adminProducts.findOne({
+        where: {
+            code: code
+        }
+    });
+    if (!existProduct) {
         res.status(404).json({
             msg: 'No se encuentra el producto indicado: ' + id
         });
     }
     else {
-        yield deleteProduct.destroy({});
+        yield existProduct.destroy({});
         res.status(200).json({
             Message: 'Registro eliminado.'
         });
     }
 });
-exports.deleteProducts = deleteProducts;
+exports.deleteProduct = deleteProduct;
 const getUsuarios = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const usuarios = yield admin_2.adminUsers.findAll();
     const usuariosActualizados = usuarios.map((usuario) => {
