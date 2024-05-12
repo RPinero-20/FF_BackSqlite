@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogin = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
+exports.postLogin = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -112,7 +112,6 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
             sectionID: product.dataValues.sectionID,
             price: product.dataValues.price
         }));
-        console.log(productsAll);
         res.json(productsAll);
     }
     catch (error) {
@@ -261,6 +260,32 @@ const getUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getUsuario = getUsuario;
+const getUserToEdit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.query.id;
+    const userName = req.query.name;
+    const idNumber = req.query.idNumber;
+    const findUserToEdit = yield admin_2.adminUsers.findOne({
+        where: {
+            id: userId,
+            name: userName,
+            idNumber: idNumber
+        }
+    });
+    const userToEdit = {
+        id: findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.id.toString(),
+        name: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.name) || '',
+        idNumber: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.idNumber) || '',
+        email: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.email) || '',
+        password: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.password) || '',
+        phone: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.phone) || '',
+        status: findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.status,
+        job: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.job) || '',
+        department: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.department) || '',
+        address: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.address) || ''
+    };
+    res.status(200).json(userToEdit);
+});
+exports.getUserToEdit = getUserToEdit;
 const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     try {
@@ -287,18 +312,24 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.postUsuario = postUsuario;
 const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const id = req.query.id;
     const { body } = req;
     try {
-        const usuario = yield admin_2.adminUsers.findByPk(id);
-        if (!usuario) {
-            res.status(404).json({
-                msg: 'No existe usuario con ID: ' + id
+        if (id !== undefined) {
+            const usuario = yield admin_2.adminUsers.findOne({
+                where: {
+                    id: id
+                }
             });
-            return;
+            if (!usuario) {
+                res.status(404).json({
+                    msg: 'No existe usuario con ID: ' + id
+                });
+                return;
+            }
+            yield usuario.update(body);
+            res.status(201).end();
         }
-        yield usuario.update(body);
-        res.json(usuario);
     }
     catch (error) {
         console.error(error);
@@ -330,12 +361,41 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const pass = '123456';
     try {
         if (userName === email && password === pass) {
-            res.status(200).json({
-                token: 'aafd0270-8358-4467-98da-d8c1df931d35',
-                userName: 'Jinx Fouler',
-                message: 'Usuario autenticado',
-                isLogged: true
+            const dataCategories = yield admin_1.adminCategory.findAll();
+            const categoriesAll = dataCategories.map((categories) => ({
+                id: categories.dataValues.id.toString(),
+                name: categories.dataValues.name
+            }));
+            const dataSections = yield admin_1.adminSections.findAll();
+            const sectionsAll = dataSections.map((sections) => ({
+                id: sections.dataValues.id.toString(),
+                name: sections.dataValues.name,
+            }));
+            const dataSalesUnits = yield admin_1.adminSalesUnits.findAll({
+                order: [['id', 'ASC']]
             });
+            const salesUnitsAll = dataSalesUnits.map((salesUnits) => ({
+                id: salesUnits.dataValues.id.toString(),
+                name: salesUnits.dataValues.name,
+            }));
+            const userName = yield admin_2.adminUsers.findOne({
+                where: {
+                    email: email,
+                    status: true
+                },
+                attributes: ['id', 'name', 'status']
+            });
+            console.log(userName);
+            const dataWorkspace = {
+                token: 'aafd0270-8358-4467-98da-d8c1df931d35',
+                userName: userName === null || userName === void 0 ? void 0 : userName.dataValues.name,
+                message: 'Usuario autenticado',
+                isLogged: true,
+                categories: categoriesAll,
+                sections: sectionsAll,
+                salesUnits: salesUnitsAll
+            };
+            res.status(200).json(dataWorkspace);
         }
         else {
             res.status(403).json({
