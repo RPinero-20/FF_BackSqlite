@@ -161,6 +161,7 @@ function getProductByCode(productCode) {
 const putProductEdited = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const code = req.query.code;
     const { body } = req;
+    console.log('Producto editado: ', body);
     try {
         const productToEdit = yield getProductByCode(code);
         if (!productToEdit) {
@@ -186,6 +187,7 @@ const putProductEdited = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.putProductEdited = putProductEdited;
 const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
+    console.log('Producto nuevo: ', body);
     try {
         const existCode = yield admin_1.adminProducts.findOne({
             where: {
