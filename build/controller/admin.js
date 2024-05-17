@@ -20,7 +20,7 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogin = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
+exports.postLogin = exports.getClients = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -219,13 +219,14 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     });
     if (!existProduct) {
-        res.status(404).json({
-            msg: 'No se encuentra el producto indicado: ' + id
+        res.status(403).json({
+            msg: 'No se encuentra el producto indicado: ' + code
         });
     }
     else {
         yield existProduct.destroy({});
-        res.status(200).json({
+        console.log(`Registro eliminado: ${code} `);
+        res.status(201).json({
             Message: 'Registro eliminado.'
         });
     }
@@ -275,6 +276,7 @@ const getUserToEdit = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     });
     const userToEdit = {
         id: findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.id.toString(),
+        uuid: findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.uuid,
         name: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.name) || '',
         idNumber: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.idNumber) || '',
         email: (findUserToEdit === null || findUserToEdit === void 0 ? void 0 : findUserToEdit.dataValues.email) || '',
@@ -316,6 +318,7 @@ exports.postUsuario = postUsuario;
 const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.query.id;
     const { body } = req;
+    console.log("putUsuario::::: ", body);
     try {
         if (id !== undefined) {
             const usuario = yield admin_2.adminUsers.findOne({
@@ -324,8 +327,8 @@ const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 }
             });
             if (!usuario) {
-                res.status(404).json({
-                    msg: 'No existe usuario con ID: ' + id
+                res.status(403).json({
+                    msg: 'No existe usuario: ' + body.name
                 });
                 return;
             }
@@ -355,6 +358,25 @@ const deleteUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     res.json(usuario);
 });
 exports.deleteUsuario = deleteUsuario;
+const getClients = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const clients = yield admin_1.adminClients.findAll();
+    const clientsUpdated = clients.map((client) => {
+        return {
+            id: client.dataValues.uuid,
+            rif: client.dataValues.rif,
+            name: client.dataValues.name,
+            email: client.dataValues.email,
+            phone: client.dataValues.phone,
+            phone2: client.dataValues.phone2,
+            address: client.dataValues.address,
+            represent: client.dataValues.represent,
+            status: client.dataValues.status,
+            password: client === null || client === void 0 ? void 0 : client.dataValues.password
+        };
+    });
+    res.json(clientsUpdated);
+});
+exports.getClients = getClients;
 const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     console.log(body);
@@ -380,6 +402,21 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 id: salesUnits.dataValues.id.toString(),
                 name: salesUnits.dataValues.name,
             }));
+            const dataJobs = yield admin_1.adminJobsModel.findAll();
+            const jobsAll = dataJobs.map((jobs) => ({
+                id: jobs.dataValues.id.toString(),
+                name: jobs.dataValues.name,
+                code: jobs.dataValues.code,
+                description: jobs.dataValues.description
+            }));
+            const dataDepts = yield admin_1.adminDepartmentsModel.findAll();
+            console.log('::::::::dataDepts ', dataDepts);
+            const deptsAll = dataDepts.map((depts) => ({
+                id: depts.dataValues.id.toString(),
+                name: depts.dataValues.name,
+                code: depts.dataValues.code,
+                description: depts.dataValues.description
+            }));
             const userName = yield admin_2.adminUsers.findOne({
                 where: {
                     email: email,
@@ -392,10 +429,12 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 token: 'aafd0270-8358-4467-98da-d8c1df931d35',
                 userName: userName === null || userName === void 0 ? void 0 : userName.dataValues.name,
                 message: 'Usuario autenticado',
-                isLogged: true,
+                isLogged: userName === null || userName === void 0 ? void 0 : userName.dataValues.status,
                 categories: categoriesAll,
                 sections: sectionsAll,
-                salesUnits: salesUnitsAll
+                salesUnits: salesUnitsAll,
+                jobs: jobsAll,
+                departments: deptsAll
             };
             res.status(200).json(dataWorkspace);
         }
@@ -404,6 +443,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 msg: 'Usuario o contraseña incorrectos'
             });
         }
+        ;
     }
     catch (error) {
         res.status(500).json({
