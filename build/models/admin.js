@@ -214,9 +214,12 @@ exports.adminClients = connect_1.default.define('ff_clients', {
     represent: {
         type: sequelize_typescript_1.DataType.STRING
     },
+    password: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
     status: {
         type: sequelize_typescript_1.DataType.BOOLEAN
-    }
+    },
 }, {
     timestamps: false
 });
