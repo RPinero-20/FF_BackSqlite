@@ -407,7 +407,7 @@ const getClients = (_req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 phone2: client.dataValues.phone2 || '',
                 address: client.dataValues.address || '',
                 represent: client.dataValues.represent || '',
-                status: client.dataValues.status || '',
+                status: client.dataValues.status ? true : false,
                 password: (client === null || client === void 0 ? void 0 : client.dataValues.password) || '',
             };
         });
