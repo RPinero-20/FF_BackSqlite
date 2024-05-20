@@ -338,14 +338,26 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             });
             return;
         }
-        const usuario = yield admin_2.adminUsers.create(body);
-        res.json(usuario);
+        else {
+            const usuario = {
+                uuid: body.id,
+                name: body.name,
+                idNumber: body.idNumber,
+                email: body.email,
+                password: (body === null || body === void 0 ? void 0 : body.password) || '',
+                phone: body.phone,
+                status: body.status,
+                job: body.job,
+                department: body.department,
+                address: body.address
+            };
+            yield admin_2.adminUsers.create(usuario);
+            res.status(201);
+        }
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({
-            msg: 'Comuníquese con el administrador.'
-        });
+        res.status(500).json({ msg: 'Comuníquese con el administrador.' });
     }
 });
 exports.postUsuario = postUsuario;
