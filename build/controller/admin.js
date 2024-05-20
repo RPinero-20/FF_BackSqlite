@@ -242,7 +242,9 @@ const getUsuarios = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(404).json({ msg: 'No se encontraron usuarios.' });
         }
         else {
-            const usuariosActualizados = usuarios.map((usuario) => {
+            const usuariosActualizados = usuarios
+                .filter((usuario) => usuario.dataValues.status)
+                .map((usuario) => {
                 return {
                     id: usuario.dataValues.id,
                     name: usuario.dataValues.name || '',
@@ -323,6 +325,7 @@ const getUserToEdit = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getUserToEdit = getUserToEdit;
 const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
+    console.log("Post Usuario", body);
     try {
         const existEmail = yield admin_2.adminUsers.findOne({
             where: {
@@ -398,14 +401,16 @@ exports.deleteUsuario = deleteUsuario;
 const getClients = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const clients = yield admin_1.adminClients.findAll();
-        const clientsUpdated = clients.map((client) => {
+        const clientsUpdated = clients
+            .filter((client) => client.dataValues.status)
+            .map((client) => {
             return {
-                id: client.dataValues.uuid || '',
-                rif: client.dataValues.rif || '',
-                name: client.dataValues.name || '',
-                email: client.dataValues.email || '',
+                id: client.dataValues.uuid,
+                rif: client.dataValues.rif,
+                name: client.dataValues.name,
+                email: client.dataValues.email,
                 phone: client.dataValues.phone,
-                phone2: client.dataValues.phone2,
+                phone2: client.dataValues.phone2 || '',
                 address: client.dataValues.address || '',
                 represent: client.dataValues.represent || '',
                 status: client.dataValues.status ? true : false,
@@ -470,7 +475,7 @@ const postClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 name: body.name,
                 email: body.email,
                 phone: body.phone,
-                phone2: body.phone2,
+                phone2: body.phone2 || '',
                 address: body.address || '',
                 represent: body.represent || '',
                 password: body.password || '',
