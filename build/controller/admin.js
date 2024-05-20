@@ -352,7 +352,7 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 address: body.address
             };
             yield admin_2.adminUsers.create(usuario);
-            res.status(201);
+            res.status(201).end();
         }
     }
     catch (error) {
