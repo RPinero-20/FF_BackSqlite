@@ -19,10 +19,15 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postLogin = exports.deleteClient = exports.putClient = exports.postClient = exports.getClientToEdit = exports.getClients = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
+const storage_c_1 = __importDefault(require("./storage_c"));
+const multer_1 = __importDefault(require("multer"));
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll();
@@ -188,26 +193,27 @@ const putProductEdited = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.putProductEdited = putProductEdited;
 const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
+    const upload = (0, multer_1.default)({ storage: storage_c_1.default });
     console.log('Producto nuevo: ', body);
     try {
-        const existCode = yield admin_1.adminProducts.findOne({
-            where: {
-                code: body.code
+        upload.single('image')(req, res, (err) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({
+                    msg: 'Error al cargar la imagen'
+                });
+                return;
             }
+            const { body, file } = req;
+            console.log('Producto nuevo: ', body);
+            console.log('Imagen: ', file);
+            res.status(201).json({ message: 'Formulario recibido correctamente' });
         });
-        if (existCode) {
-            res.status(403).json({
-                msg: 'Código de producto ya existe. ' + body.code
-            });
-            return;
-        }
-        const productData = yield admin_1.adminProducts.create(body);
-        res.json(productData);
     }
     catch (error) {
         console.error(error);
         res.status(500).json({
-            msg: 'Error interno contacte al administrador.'
+            msg: 'Error interno, contacte al administrador'
         });
     }
 });
