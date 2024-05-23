@@ -192,11 +192,9 @@ const putProductEdited = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.putProductEdited = putProductEdited;
 const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { body } = req;
     const upload = (0, multer_1.default)({ storage: storage_c_1.default });
-    console.log('Producto nuevo: ', body);
     try {
-        upload.single('image')(req, res, (err) => {
+        upload.single('picture')(req, res, (err) => {
             if (err) {
                 console.error(err);
                 res.status(500).json({
