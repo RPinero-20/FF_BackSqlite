@@ -608,14 +608,14 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             const salesUnitsAll = dataSalesUnits.map((salesUnits) => ({
                 id: salesUnits.dataValues.id.toString(),
-                name: salesUnits.dataValues.name,
+                name: salesUnits.dataValues.name
             }));
             const dataJobs = yield admin_1.adminJobsModel.findAll();
             const jobsAll = dataJobs.map((jobs) => ({
                 id: jobs.dataValues.id.toString(),
                 name: jobs.dataValues.name,
                 code: jobs.dataValues.code,
-                description: jobs.dataValues.description
+                description: jobs.dataValues.description || ''
             }));
             const dataDepts = yield admin_1.adminDepartmentsModel.findAll();
             console.log('::::::::dataDepts ', dataDepts);
@@ -623,7 +623,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 id: depts.dataValues.id.toString(),
                 name: depts.dataValues.name,
                 code: depts.dataValues.code,
-                description: depts.dataValues.description
+                description: depts.dataValues.description || ''
             }));
             const userName = yield admin_2.adminUsers.findOne({
                 where: {
