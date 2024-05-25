@@ -121,6 +121,9 @@ exports.adminProducts = connect_1.default.define('ff_products', {
     unitQty: {
         type: sequelize_typescript_1.DataType.NUMBER
     },
+    saleUnitID: {
+        type: sequelize_typescript_1.DataType.NUMBER
+    },
     unitPerBox: {
         type: sequelize_typescript_1.DataType.NUMBER
     },
