@@ -26,8 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.postLogin = exports.deleteClient = exports.putClient = exports.postClient = exports.getClientToEdit = exports.getClients = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
-const storage_c_1 = __importDefault(require("./storage_c"));
-const multer_1 = __importDefault(require("multer"));
+const storage_c_1 = __importDefault(require("../services/storage_c"));
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll();
@@ -107,6 +106,7 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
             weightPerBox: product.dataValues.weightPerBox,
             byUnit: product.dataValues.byUnit,
             unitQty: product.dataValues.unitQty,
+            saleUnitID: product.dataValues.saleUnitID,
             unitPerBox: product.dataValues.unitPerBox,
             description: product.dataValues.description || '',
             isOffer: product.dataValues.isOffer,
@@ -192,21 +192,31 @@ const putProductEdited = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.putProductEdited = putProductEdited;
 const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const upload = (0, multer_1.default)({ storage: storage_c_1.default });
     try {
-        upload.single('picture')(req, res, (err) => {
+        (0, storage_c_1.default)(req, res, (err) => __awaiter(void 0, void 0, void 0, function* () {
             if (err) {
                 console.error(err);
                 res.status(500).json({
                     msg: 'Error al cargar la imagen'
                 });
-                return;
             }
             const { body, file } = req;
             console.log('Producto nuevo: ', body);
             console.log('Imagen: ', file);
-            res.status(201).json({ message: 'Formulario recibido correctamente' });
-        });
+            const existCode = yield admin_1.adminProducts.findOne({
+                where: {
+                    code: body.code
+                }
+            });
+            if (existCode) {
+                res.status(403).json({
+                    msg: 'Código de producto ya existe. ' + body.code
+                });
+                return;
+            }
+            const productData = yield admin_1.adminProducts.create(body);
+            res.json(productData);
+        }));
     }
     catch (error) {
         console.error(error);
