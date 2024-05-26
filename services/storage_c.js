@@ -1,104 +1,52 @@
-import { Router } from 'express'
-import multer, { diskStorage } from 'multer'
-import { join, extname as _extname } from 'path'
-import { readFileSync } from 'fs'
-
-
-const saveImage = multer.diskStorage({
-    destination: join(__dirname, '../public/assets/images/productsThumbnails/'),
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const multer_1 = __importStar(require("multer"));
+const path_1 = require("path");
+const fs_1 = require("fs");
+const saveImage = multer_1.default.diskStorage({
+    destination: '/opt/render/project/src/build/public/assets/images/productsThumbnails/',
     filename: (_req, file, cb) => {
         cb(null, file.originalname);
     }
 });
-
 const fileFilter = (req, file, cb) => {
     const filetypes = /jpeg|jpg|png|webp/;
     const mimetype = filetypes.test(file.mimetype);
-    const extname = filetypes.test(_extname(file.originalname).toLowerCase());
+    const extname = filetypes.test((0, path_1.extname)(file.originalname).toLowerCase());
     if (mimetype && extname) {
         cb(null, true);
-    } else {
+    }
+    else {
         cb(new Error('El archivo debe ser una imagen.'));
     }
 };
-
-const fileUpload = multer({
+const fileUpload = (0, multer_1.default)({
     storage: saveImage,
     fileFilter: fileFilter
 }).single('picture');
-
-
-
-// // Configurar multer para guardar los archivos en una carpeta específica
-// const saveImage = multer.diskStorage({
-//     destination: join(__dirname, '../public/assets/images/productsThumbnails'), //'uploads/',
-//     filename: (_req, file, cb) => {
-//         cb(null, file.originalname);
-//     }
-// });
-
-// const fileUpload = multer({
-//     storage: saveImage,
-//     // limits: { fileSize: 1000000, files: 1 }
-//     fileFilter: (req, file, cb) => {
-//         const filetypes = /jpeg|jpg|png|webp/;
-//         const mimetype = filetypes.test(file.mimetype);
-//         const extname = filetypes.test(_extname(file.originalname));
-//         if (mimetype && extname) {
-//             return cb(null, true);
-//         }
-//         cb('Error: El archivo debe ser una imágen.');
-//     }
-// }).single('picture');
-
-
-
-
-// export async function storage(imageFile, productCode) {
-
-//     const diskstorage = diskStorage({
-//         destination: join(__dirname, '../public/assets/images/productsThumbnails/'), // esta es la carpeta de destino de las imágenes, colocar la ruta public del proyecto
-//         filename: (req, file, cb) => {
-//             cb(null, Date.now() + '-' + productCode + '-' + file.originalname.toLocaleLowerCase) // este es el nombre que obtendrá el archivo
-//         }
-//     });
-
-
-//     const fileUpload = multer({
-//         storage: diskstorage,
-//         fileFilter: ( req, file, cb) => {
-//             const filetypes = /jpeg|jpg|png|webp/;
-//             const mimetype = filetypes.test(file.mimetype);
-//             const extname = filetypes.test(_extname(file.originalname));
-//             if (mimetype && extname) {
-//                 return cb(null, true);
-//             }
-//             cb('Error: El archivo debe ser una imágen.');
-//         }
-//     }).array('picture') // aqui es donde recibe las imagenes si es single es una si es un array son varias
-
-
-// }
-
-
-// router.post('/images/post', fileUpload,(req, res) => {
-
-//     // https://www.youtube.com/watch?v=pSd9w9tx5MQ ***regresar al minuto 40 en caso de querer usar MySQL para almacenar
-
-//     req.getConnection((err, conn) => {
-//         if (err) return res.status(500).send('server error')
-
-//         const type = req.file.mimetype
-//         const name = req.file.originalname
-//         const data = readFileSync(join(__dirname, '../images/' + req.file.filename))
-
-//         conn.query('INSERT INTO images set ? ', [{type: type, name: name, data: data}] , (err, rows) => {
-//             if (err)
-//                 return res.status(500).send('server error')
-//             res.send('image saved!!')
-//         })
-//     });
-//     console.log(req.files) //se puede colocar req.files en caso de varios archivos
-// })
-
-export default fileUpload;
+exports.default = fileUpload;
+//# sourceMappingURL=storage_c.js.map
