@@ -27,6 +27,7 @@ exports.postLogin = exports.deleteClient = exports.putClient = exports.postClien
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
 const storage_c_1 = __importDefault(require("../services/storage_c"));
+const fs_1 = __importDefault(require("fs"));
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll();
@@ -106,12 +107,12 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
             weightPerBox: product.dataValues.weightPerBox,
             byUnit: product.dataValues.byUnit,
             unitQty: product.dataValues.unitQty,
-            saleUnitID: product.dataValues.saleUnitID,
+            saleUnitID: product.dataValues.saleUnitID.toString(),
             unitPerBox: product.dataValues.unitPerBox,
             description: product.dataValues.description || '',
             isOffer: product.dataValues.isOffer,
             isFree: product.dataValues.isFree,
-            isOutStock: product.dataValues.isOutStock,
+            isOutStock: product.dataValues.unitQty !== 0 ? 0 : product.dataValues.isOutStock,
             discount: product.dataValues.discount,
             categoryID: product.dataValues.categoryID,
             sectionID: product.dataValues.sectionID,
@@ -193,7 +194,7 @@ const putProductEdited = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.putProductEdited = putProductEdited;
 const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        (0, storage_c_1.default)(req, res, (err) => __awaiter(void 0, void 0, void 0, function* () {
+        const image = (0, storage_c_1.default)(req, res, (err) => __awaiter(void 0, void 0, void 0, function* () {
             if (err) {
                 console.error(err);
                 res.status(500).json({
@@ -201,8 +202,15 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 });
             }
             const { body, file } = req;
-            console.log('Producto nuevo: ', body);
-            console.log('Imagen: ', file);
+            let imageUrl = '';
+            if (file !== undefined) {
+                const originalName = file === null || file === void 0 ? void 0 : file.originalname;
+                const newName = Date.now() + '-' + body.code + file.originalname;
+                const newPath = file === null || file === void 0 ? void 0 : file.path.replace(originalName, newName);
+                fs_1.default.renameSync(file === null || file === void 0 ? void 0 : file.path, newPath);
+                imageUrl = newPath;
+            }
+            console.log("imageUrl::::: ", imageUrl);
             const existCode = yield admin_1.adminProducts.findOne({
                 where: {
                     code: body.code
@@ -214,6 +222,7 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 });
                 return;
             }
+            body.imageUrl = imageUrl;
             const productData = yield admin_1.adminProducts.create(body);
             res.json(productData);
         }));
