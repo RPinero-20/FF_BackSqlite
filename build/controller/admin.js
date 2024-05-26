@@ -212,6 +212,7 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             }
             console.log("imageUrl::::: ", imageUrl);
             console.log("HOSTNAME::::: ", req.hostname);
+            console.log("DIR NAME::::: ", __dirname);
             const existCode = yield admin_1.adminProducts.findOne({
                 where: {
                     code: body.code
