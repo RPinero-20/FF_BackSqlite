@@ -211,6 +211,7 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 imageUrl = newPath;
             }
             console.log("imageUrl::::: ", imageUrl);
+            console.log("HOSTNAME::::: ", req.hostname);
             const existCode = yield admin_1.adminProducts.findOne({
                 where: {
                     code: body.code
