@@ -203,9 +203,10 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             }
             const { body, file } = req;
             let imageUrl = '';
+            let newName = '';
             if (file !== undefined) {
                 const originalName = file === null || file === void 0 ? void 0 : file.originalname;
-                const newName = Date.now() + '-' + body.code + file.originalname;
+                newName = Date.now() + '-' + body.code + file.originalname;
                 const newPath = file === null || file === void 0 ? void 0 : file.path.replace(originalName, newName);
                 fs_1.default.renameSync(file === null || file === void 0 ? void 0 : file.path, newPath);
                 imageUrl = newPath;
@@ -224,7 +225,7 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 });
                 return;
             }
-            body.imageUrl = imageUrl;
+            body.imageUrl = `${req.protocol}://${req.hostname}:${process.env.PORT || '8000'}/assets/images/productsThumbnails/${newName}`;
             const productData = yield admin_1.adminProducts.create(body);
             res.json(productData);
         }));
