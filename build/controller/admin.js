@@ -438,9 +438,10 @@ const deleteUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.deleteUsuario = deleteUsuario;
 const getClients = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const clients = yield admin_1.adminClients.findAll();
+        const clients = yield admin_1.adminClients.findAll({
+            order: [['status', 'DESC']]
+        });
         const clientsUpdated = clients
-            .filter((client) => client.dataValues.status)
             .map((client) => {
             return {
                 id: client.dataValues.uuid,
