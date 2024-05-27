@@ -28,7 +28,7 @@ const multer_1 = __importStar(require("multer"));
 const path_1 = require("path");
 const fs_1 = require("fs");
 const saveImage = multer_1.default.diskStorage({
-    destination: '/opt/render/project/src/build/public/assets/images/productsThumbnails/',
+    destination: 'public/assets/images/productsThumbnails/',
     filename: (_req, file, cb) => {
         cb(null, file.originalname);
     }
