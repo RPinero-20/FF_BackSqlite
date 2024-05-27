@@ -263,7 +263,7 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.deleteProduct = deleteProduct;
 const getUsuarios = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const usuarios = yield admin_2.adminUsers.findAll();
+        const usuarios = yield admin_2.adminUsers.findAll({ order: [['status', 'DESC']] });
         if (!usuarios) {
             res.status(404).json({ msg: 'No se encontraron usuarios.' });
         }
