@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogin = exports.deleteClient = exports.putClient = exports.postClient = exports.getClientToEdit = exports.getClients = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
+exports.postLogin = exports.deleteOrder = exports.putOrderEdited = exports.postOrderDetail = exports.getOrderDetailToEdit = exports.getOrdersDetails = exports.deleteClient = exports.putClient = exports.postClient = exports.getClientToEdit = exports.getClients = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
 const storage_c_1 = __importDefault(require("../services/storage_c"));
@@ -614,6 +614,60 @@ const deleteClient = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.deleteClient = deleteClient;
+const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const orders = yield admin_1.adminOrdersModel.findAll();
+        if (!orders) {
+            res.status(403).json({ Message: 'No se encontraron pedidos.' });
+        }
+        else {
+            const mappedData = yield Promise.all(orders.map((item) => __awaiter(void 0, void 0, void 0, function* () {
+                const client = yield admin_1.adminClients.findOne({
+                    where: { uuid: item.dataValues.userId },
+                    attributes: ['name']
+                });
+                const parsedProductsList = JSON.parse(item.dataValues.productsList);
+                return {
+                    orderId: item === null || item === void 0 ? void 0 : item.dataValues.orderId,
+                    client: client === null || client === void 0 ? void 0 : client.dataValues.name,
+                    createdAt: (item === null || item === void 0 ? void 0 : item.dataValues.createdAt) || '',
+                    updatedAt: (item === null || item === void 0 ? void 0 : item.dataValues.updatedAt) || '',
+                    status: (item === null || item === void 0 ? void 0 : item.dataValues.isOrderConfirmed) ? 'Pendiente' : 'Confirmado',
+                    productsList: parsedProductsList
+                };
+            })));
+            res.status(201).json(mappedData);
+        }
+    }
+    catch (_5) {
+        res.status(500).json({ Message: 'Comuníquese con el administrador' });
+    }
+});
+exports.getOrdersDetails = getOrdersDetails;
+const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const orderId = req.query.orderId;
+    console.log("getOrderDetailToEdit: ", orderId);
+    res.status(200);
+});
+exports.getOrderDetailToEdit = getOrderDetailToEdit;
+const postOrderDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    console.log("POST ORDER: ", body);
+    res.status(200);
+});
+exports.postOrderDetail = postOrderDetail;
+const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    console.log("PUT ORDER: ", body);
+    res.status(200);
+});
+exports.putOrderEdited = putOrderEdited;
+const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const orderId = req.query.orderId;
+    console.log("DELETE ORDER: ", orderId);
+    res.status(200);
+});
+exports.deleteOrder = deleteOrder;
 const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     console.log(body);
@@ -647,12 +701,23 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 description: jobs.dataValues.description || ''
             }));
             const dataDepts = yield admin_1.adminDepartmentsModel.findAll();
-            console.log('::::::::dataDepts ', dataDepts);
             const deptsAll = dataDepts.map((depts) => ({
                 id: depts.dataValues.id.toString(),
                 name: depts.dataValues.name,
                 code: depts.dataValues.code,
                 description: depts.dataValues.description || ''
+            }));
+            const dataStatus = yield admin_1.adminStatusModel.findAll();
+            const statusAll = dataStatus.map((status) => ({
+                id: status.dataValues.id.toString(),
+                name: status.dataValues.name
+            }));
+            const dataOrderStatus = yield admin_1.adminOrderStatusModel.findAll();
+            console.log('::::::::dataOrderStatus ', dataOrderStatus);
+            const orderStatusAll = dataOrderStatus.map((orderStatus) => ({
+                id: orderStatus.dataValues.id.toString(),
+                name: orderStatus.dataValues.name,
+                code: orderStatus.dataValues.code
             }));
             const userName = yield admin_2.adminUsers.findOne({
                 where: {
@@ -671,7 +736,9 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 sections: sectionsAll,
                 salesUnits: salesUnitsAll,
                 jobs: jobsAll,
-                departments: deptsAll
+                departments: deptsAll,
+                status: statusAll,
+                orderStatus: orderStatusAll
             };
             res.status(200).json(dataWorkspace);
         }
