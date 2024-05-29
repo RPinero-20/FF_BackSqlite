@@ -118,6 +118,7 @@ export interface orderDetailsInterface {
     totalUsd: number;
 
 }
+
 export interface urlParams {
     category?: string;
     search?: string;
@@ -135,15 +136,40 @@ export interface userParams {
 }
 
 export interface adminUsersInterfaceModel {
-    id: number,
+    id?: string,
+    uuid: string,
     name: string,
     idNumber: number,
     email: string,
+    password?: string,
     phone: number,
     status: boolean,
     job: string,
     department: string,
     address: string
+}
+
+export interface adminProductsInterfaceModel {
+    imageUrl:string,
+    name:string,
+    code:string,
+    type:string,
+    byWeight:bool,
+    weightPerUnit:number,
+    weightPerBox:number,
+    byUnit:bool,
+    unitQty:number,
+    saleUnitID: number,
+    unitPerBox:number,
+    picture?: string,
+    description:string,
+    isOffer:number,
+    isFree:bool,
+    isOutStock:bool,
+    discount:number,
+    categoryID:number,
+    sectionID:number,
+    price:number
 }
 
 export interface adminLoginUserInterfaceModel {
@@ -152,7 +178,21 @@ export interface adminLoginUserInterfaceModel {
 }
 
 export interface clientLoginUserInterfaceModel {
+    userName: string,
+    password: string
+}
 
+export interface clientUsersInterfaceModel {
+    uuid?: string,
+    rif: string,
+    name: string,
+    email: string,
+    phone: number,
+    phone2: number,
+    address: string,
+    represent: string,
+    password?: string,
+    status: number,
 }
 
 export interface isOrderConfirmedInterface {
@@ -218,6 +258,38 @@ export interface infoOrderDetailPrintInterface {
         totalPay: string,
 }
 
+export interface dataConfigurationWorkspaceInterface {
+    token: string,
+    userName: string,
+    message: string,
+    isLogged: true,
+    categories: dataConfig[],
+    sections: dataConfig[],
+    salesUnits: dataConfig[],
+    jobs: jobsDeptsInterface[],
+    departments: jobsDeptsInterface[],
+    status: dataConfig[],
+    orderStatus: orderStatusesInterface[]
+}
+
+export interface dataConfig{
+    id: string,
+    name: string,
+}
+
+export interface jobsDeptsInterface{
+    id: string,
+    name: string,
+    code: string,
+    description: string,
+}
+
+export interface orderStatusesInterface{
+    id: string,
+    name: string,
+    code: string,
+}
+
 export type ClientURLS = '/home'
     | '/productDetail'
     | '/categories'
@@ -236,11 +308,18 @@ export type ClientURLS = '/home'
 
 export type AdminURLS = '/home'
     | '/products'
-    | '/productDetail/:id'
-    | '/products/:code'
-    | '/deleteProduct/:id'
+    | '/productDetail'
+    | '/product'
+    | '/product/newProduct'
+    | '/deleteProduct'
     | '/categories'
     | '/sections'
     | '/users'
-    | '/users/:id'
+    | '/user'
+    | '/clients'
+    | '/client'
+    | '/orders'
+    | '/order'
     | '/login';
+
+//revisar post y put de usuarios admin
