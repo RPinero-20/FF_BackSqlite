@@ -25,6 +25,11 @@ const toEditClient = '/client';
 const editedClient = '/client';
 const createClient = '/client';
 const delClient = '/client';
+const orders = '/orders';
+const toEditOrder = '/order';
+const editedOrder = '/order';
+const createOrder = '/order';
+const delOrder = '/order';
 const loginUser = '/login';
 adminRouter.use((_req, _res, next) => {
     (0, connect_1.conectToDB)();
@@ -48,6 +53,11 @@ adminRouter.get(toEditClient, admin_1.getClientToEdit);
 adminRouter.put(editedClient, admin_1.putClient);
 adminRouter.post(createClient, admin_1.postClient);
 adminRouter.delete(delClient, admin_1.deleteClient);
+adminRouter.get(orders, admin_1.getOrdersDetails);
+adminRouter.get(toEditOrder, admin_1.getOrderDetailToEdit);
+adminRouter.put(editedOrder, admin_1.putOrderEdited);
+adminRouter.post(createOrder, admin_1.postOrderDetail);
+adminRouter.delete(delOrder, admin_1.deleteOrder);
 adminRouter.post(loginUser, admin_3.postLogin);
 exports.default = adminRouter;
 //# sourceMappingURL=admin.js.map
