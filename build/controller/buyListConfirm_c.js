@@ -31,18 +31,18 @@ const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
             }
             else {
                 let isConfirmed = 0;
-                if (existOrder.dataValues.isOrderConfirmed !== 0) {
+                if (existOrder.dataValues.isOrderConfirmed === 0) {
                     isConfirmed = 1;
-                }
-                const orderConfirmed = {
-                    orderId: existOrder.dataValues.orderId,
-                    isOrderConfirmed: isConfirmed
-                };
-                console.log("linea 31::: ", orderConfirmed);
-                yield buyListConfirm_1.isOrderConfirmedModel.update(orderConfirmed, { where: {
+                    const orderConfirmed = {
                         orderId: existOrder.dataValues.orderId,
-                    } });
-                res.status(201).end();
+                        isOrderConfirmed: isConfirmed
+                    };
+                    console.log("linea 31::: ", orderConfirmed);
+                    yield buyListConfirm_1.isOrderConfirmedModel.update(orderConfirmed, { where: {
+                            orderId: existOrder.dataValues.orderId,
+                        } });
+                    res.status(201).end();
+                }
             }
         }
         catch (error) {
