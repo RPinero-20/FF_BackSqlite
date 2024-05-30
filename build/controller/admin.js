@@ -633,7 +633,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                 });
                 const currency = order.dataValues.currency === 0 ? 'Usd' : 'Bsd';
                 const totalPay = order.dataValues.currency === 0 ? order.dataValues.totalUsd : order.dataValues.totalBsd;
-                const isOrderPaid = order.dataValues.isOrderPaid === 0 ? 'Pendiente' : 'Pagado';
+                const status = order.dataValues.isOrderPaid === 0 ? 'Pendiente' : 'Pagado';
                 const updatedProductsList = yield findProductsListsOrders(order.dataValues.productsList);
                 return {
                     orderId: order.dataValues.orderId,
@@ -643,7 +643,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                     address: client === null || client === void 0 ? void 0 : client.dataValues.address,
                     totalPay: totalPay,
                     currency: currency,
-                    isOrderPaid: isOrderPaid,
+                    status: status,
                     lastUpdateDate: '',
                     productsList: updatedProductsList
                 };
