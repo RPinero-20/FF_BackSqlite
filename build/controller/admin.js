@@ -28,6 +28,7 @@ const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
 const storage_c_1 = __importDefault(require("../services/storage_c"));
 const fs_1 = __importDefault(require("fs"));
+const buyListConfirm_1 = require("../models/buyListConfirm");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll();
@@ -621,26 +622,37 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(403).json({ Message: 'No se encontraron pedidos.' });
         }
         else {
-            const mappedData = yield Promise.all(orders.map((item) => __awaiter(void 0, void 0, void 0, function* () {
+            const parsedListOrders = orders.map(order => {
+                order.dataValues.productsList = JSON.parse(order.dataValues.productsList);
+                return order;
+            });
+            const transformedUserListOrders = yield Promise.all(parsedListOrders.map((order) => __awaiter(void 0, void 0, void 0, function* () {
                 const client = yield admin_1.adminClients.findOne({
-                    where: { uuid: item.dataValues.userId },
-                    attributes: ['name']
+                    where: { uuid: order.dataValues.userId },
+                    attributes: ['name', 'email', 'phone', 'address']
                 });
-                const parsedProductsList = JSON.parse(item.dataValues.productsList);
+                const currency = order.dataValues.currency === 0 ? 'Usd' : 'Bsd';
+                const totalPay = order.dataValues.currency === 0 ? order.dataValues.totalUsd : order.dataValues.totalBsd;
+                const isOrderPaid = order.dataValues.isOrderPaid === 0 ? 'Pendiente' : 'Pagado';
+                const updatedProductsList = yield findProductsListsOrders(order.dataValues.productsList);
                 return {
-                    orderId: item === null || item === void 0 ? void 0 : item.dataValues.orderId,
-                    client: client === null || client === void 0 ? void 0 : client.dataValues.name,
-                    createdAt: (item === null || item === void 0 ? void 0 : item.dataValues.createdAt) || '',
-                    updatedAt: (item === null || item === void 0 ? void 0 : item.dataValues.updatedAt) || '',
-                    status: (item === null || item === void 0 ? void 0 : item.dataValues.isOrderConfirmed) ? 'Pendiente' : 'Confirmado',
-                    productsList: parsedProductsList
+                    orderId: order.dataValues.orderId,
+                    name: client === null || client === void 0 ? void 0 : client.dataValues.name,
+                    email: client === null || client === void 0 ? void 0 : client.dataValues.email,
+                    phone: client === null || client === void 0 ? void 0 : client.dataValues.phone,
+                    address: client === null || client === void 0 ? void 0 : client.dataValues.address,
+                    totalPay: totalPay,
+                    currency: currency,
+                    isOrderPaid: isOrderPaid,
+                    lastUpdateDate: '',
+                    productsList: updatedProductsList
                 };
             })));
-            res.status(201).json(mappedData);
+            res.status(200).json(transformedUserListOrders);
         }
     }
     catch (_5) {
-        res.status(500).json({ Message: 'Comuníquese con el administrador' });
+        res.status(500).json({ Message: 'Error al obtener los pedidos.' });
     }
 });
 exports.getOrdersDetails = getOrdersDetails;
@@ -756,4 +768,25 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.postLogin = postLogin;
+function findProductsListsOrders(wishProductList) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const productList = [];
+        for (const wishProduct of wishProductList) {
+            const productId = parseInt(wishProduct.productId);
+            const product = yield buyListConfirm_1.lastBuyListConfirmedModel.findByPk(productId);
+            if (product) {
+                const arrayTemporal = {
+                    id: product.dataValues.id,
+                    imageUrl: product.dataValues.imageUrl,
+                    name: product.dataValues.name,
+                    code: product.dataValues.code,
+                    price: product.dataValues.price,
+                    quantity: wishProduct.quantity
+                };
+                productList.push(arrayTemporal);
+            }
+        }
+        return productList;
+    });
+}
 //# sourceMappingURL=admin.js.map
