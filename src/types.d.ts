@@ -106,6 +106,7 @@ export interface orderDetailsInterface {
     isOrderConfirmed?: number;
     payNumber: number;
     isOrderPaid: boolean;
+    orderStatusId: number;
     bank: string;
     shippingAddress: string;
     depositorName: string;
@@ -194,6 +195,7 @@ export interface clientUsersInterfaceModel {
     password?: string,
     status: number,
 }
+
 
 export interface isOrderConfirmedInterface {
     orderId: string,
