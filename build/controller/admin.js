@@ -633,7 +633,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                 });
                 const currency = order.dataValues.currency === 0 ? 'Usd' : 'Bsd';
                 const totalPay = order.dataValues.currency === 0 ? order.dataValues.totalUsd : order.dataValues.totalBsd;
-                const status = order.dataValues.isOrderPaid === 0 ? 'Pendiente' : 'Pagado';
+                const status = order.dataValues.isOrderPaid === 0 ? 'PTE' : 'CONF';
                 const updatedProductsList = yield findProductsListsOrders(order.dataValues.productsList);
                 return {
                     orderId: order.dataValues.orderId,
@@ -658,8 +658,49 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
 exports.getOrdersDetails = getOrdersDetails;
 const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const orderId = req.query.orderId;
-    console.log("getOrderDetailToEdit: ", orderId);
-    res.status(200);
+    try {
+        const orderDetail = yield admin_1.adminOrdersModel.findOne({
+            where: {
+                orderId: orderId
+            }
+        });
+        console.log(":::::::::::::::::: ", orderDetail);
+        if (!orderDetail) {
+            res.status(404).json({ Message: 'No se encontró el pedido.' });
+        }
+        else {
+            let checkOrderStatus = "";
+            if (orderDetail.dataValues.isOrderConfirmed == 0 && orderDetail.dataValues.isOrderPaid == 0) {
+                checkOrderStatus = 'PTE';
+            }
+            else if (orderDetail.dataValues.isOrderConfirmed == 1 && orderDetail.dataValues.shippingAddress !== 0 && orderDetail.dataValues.isOrderPaid == 0) {
+                checkOrderStatus = 'CONF';
+            }
+            else if (orderDetail.dataValues.isOrderConfirmed == 1 && orderDetail.dataValues.shippingAddress !== 0 && orderDetail.dataValues.isOrderPaid == 1) {
+                checkOrderStatus = 'ENPROC';
+            }
+            else {
+                res.status(500).json({ Message: "Comuníquese con el administrador." });
+            }
+            orderDetail.dataValues.productsList = JSON.parse(orderDetail.dataValues.productsList);
+            const currency = orderDetail.dataValues.currency === 0 ? 'Usd' : 'Bsd';
+            const totalPay = orderDetail.dataValues.currency === 0 ? orderDetail.dataValues.totalUsd : orderDetail.dataValues.totalBsd;
+            const updatedProductsList = yield findProductsListsOrders(orderDetail.dataValues.productsList);
+            const newOrderDetail = {
+                orderId: orderDetail.dataValues.orderId,
+                userId: orderDetail.dataValues.userId,
+                totalPay: totalPay,
+                currency: currency,
+                status: checkOrderStatus,
+                lastUpdateDate: '',
+                productsList: updatedProductsList
+            };
+            res.status(201).json(newOrderDetail);
+        }
+    }
+    catch (_6) {
+        res.status(500).json({ Message: 'Error al obtener el pedido.' });
+    }
 });
 exports.getOrderDetailToEdit = getOrderDetailToEdit;
 const postOrderDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -669,9 +710,42 @@ const postOrderDetail = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.postOrderDetail = postOrderDetail;
 const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = req.body;
-    console.log("PUT ORDER: ", body);
-    res.status(200);
+    const orderId = req.body.orderId;
+    const userId = req.body.userId;
+    const status = req.body.status;
+    try {
+        if (orderId !== undefined && status !== undefined) {
+            const orderDetail = yield admin_1.adminOrdersModel.findOne({ where: { orderId: orderId } });
+            const orderStatus = yield admin_1.adminOrderStatusModel.findAll();
+            if (orderDetail !== null) {
+                if (orderDetail.dataValues.userId === userId) {
+                    if (status !== 'CONF' && status !== "PTE") {
+                        let statusValue;
+                        orderStatus.forEach(statusCode => {
+                            if (statusCode.dataValues.code === status) {
+                                statusValue = statusCode.dataValues.id;
+                            }
+                        });
+                        if (statusValue !== undefined) {
+                            yield admin_1.adminOrdersModel.update({ orderStatusId: statusValue }, {
+                                where: {
+                                    orderId: orderId,
+                                    userId: userId
+                                }
+                            });
+                        }
+                        else {
+                            res.status(403).json({ Message: "No es posible cambiar el estado porque falta un requisito." });
+                        }
+                    }
+                }
+            }
+        }
+    }
+    catch (_7) {
+        res.status(500).json({ Message: 'Error al obtener el pedido.' });
+    }
+    res.status(201).end();
 });
 exports.putOrderEdited = putOrderEdited;
 const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
