@@ -640,7 +640,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                     name: client === null || client === void 0 ? void 0 : client.dataValues.name,
                     email: client === null || client === void 0 ? void 0 : client.dataValues.email,
                     phone: client === null || client === void 0 ? void 0 : client.dataValues.phone,
-                    address: order === null || order === void 0 ? void 0 : order.dataValues.shippingAddress,
+                    shippingAddress: order === null || order === void 0 ? void 0 : order.dataValues.shippingAddress,
                     totalPay: totalPay,
                     currency: currency,
                     status: status,
