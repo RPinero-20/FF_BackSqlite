@@ -137,6 +137,9 @@ exports.adminOrdersModel = connect_1.default.define('ff_order_details', {
     isOrderPaid: {
         type: sequelize_typescript_1.DataType.NUMBER
     },
+    orderStatusId: {
+        type: sequelize_typescript_1.DataType.NUMBER
+    },
     bank: {
         type: sequelize_typescript_1.DataType.STRING
     },
