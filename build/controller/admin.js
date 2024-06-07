@@ -629,7 +629,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
             const transformedUserListOrders = yield Promise.all(parsedListOrders.map((order) => __awaiter(void 0, void 0, void 0, function* () {
                 const client = yield admin_1.adminClients.findOne({
                     where: { uuid: order.dataValues.userId },
-                    attributes: ['name', 'email', 'phone', 'address']
+                    attributes: ['rif', 'name', 'email', 'phone', 'address']
                 });
                 const currency = order.dataValues.currency === 0 ? 'Usd' : 'Bsd';
                 const totalPay = order.dataValues.currency === 0 ? order.dataValues.totalUsd : order.dataValues.totalBsd;
@@ -637,9 +637,10 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                 const updatedProductsList = yield findProductsListsOrders(order.dataValues.productsList);
                 return {
                     orderId: order.dataValues.orderId,
+                    rif: client === null || client === void 0 ? void 0 : client.dataValues.rif,
                     name: client === null || client === void 0 ? void 0 : client.dataValues.name,
                     email: client === null || client === void 0 ? void 0 : client.dataValues.email,
-                    phone: client === null || client === void 0 ? void 0 : client.dataValues.phone,
+                    phone: client === null || client === void 0 ? void 0 : client.dataValues.phone.toString(),
                     shippingAddress: order === null || order === void 0 ? void 0 : order.dataValues.shippingAddress,
                     totalPay: totalPay,
                     currency: currency,
@@ -710,16 +711,22 @@ const postOrderDetail = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.postOrderDetail = postOrderDetail;
 const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const orderId = req.body.orderId;
-    const userId = req.body.userId;
+    const orderId = req.query.orderId;
+    const userRif = req.body.rif;
     const status = req.body.status;
     try {
         if (orderId !== undefined && status !== undefined) {
-            const orderDetail = yield admin_1.adminOrdersModel.findOne({ where: { orderId: orderId } });
+            console.log("PRIMERA SENTENCIA");
+            const userKeyData = yield admin_1.adminClients.findOne({ where: { rif: userRif } });
             const orderStatus = yield admin_1.adminOrderStatusModel.findAll();
+            const orderDetail = yield admin_1.adminOrdersModel.findOne({ where: { orderId: orderId } });
             if (orderDetail !== null) {
-                if (orderDetail.dataValues.userId === userId) {
+                console.log("SEGUNDA SENTENCIA");
+                if ((userKeyData === null || userKeyData === void 0 ? void 0 : userKeyData.dataValues.uuid) === orderDetail.dataValues.userId) {
+                    console.log("TERCERA SENTENCIA");
+                    let userId = orderDetail.dataValues.userId;
                     if (status !== 'CONF' && status !== "PTE") {
+                        console.log("CUARTA SENTENCIA");
                         let statusValue;
                         orderStatus.forEach(statusCode => {
                             if (statusCode.dataValues.code === status) {
