@@ -806,11 +806,16 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 name: status.dataValues.name
             }));
             const dataOrderStatus = yield admin_1.adminOrderStatusModel.findAll();
-            console.log('::::::::dataOrderStatus ', dataOrderStatus);
             const orderStatusAll = dataOrderStatus.map((orderStatus) => ({
                 id: orderStatus.dataValues.id.toString(),
                 name: orderStatus.dataValues.name,
                 code: orderStatus.dataValues.code
+            }));
+            const dataStatusIdentifiers = yield admin_1.adminStatusIdentifiers.findAll();
+            const statusIdentifiersAll = dataStatusIdentifiers.map((identifiers) => ({
+                id: identifiers.dataValues.id.toString(),
+                name: identifiers.dataValues.name,
+                description: identifiers.dataValues.description
             }));
             const userName = yield admin_2.adminUsers.findOne({
                 where: {
@@ -831,6 +836,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 jobs: jobsAll,
                 departments: deptsAll,
                 status: statusAll,
+                statusIdentifiers: statusIdentifiersAll,
                 orderStatus: orderStatusAll
             };
             res.status(200).json(dataWorkspace);
