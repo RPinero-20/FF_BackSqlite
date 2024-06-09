@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.adminClients = exports.adminUsers = exports.adminProducts = exports.adminOrdersModel = exports.adminOrderStatusModel = exports.adminDepartmentsModel = exports.adminJobsModel = exports.adminStatusModel = exports.adminSalesUnits = exports.adminCategory = exports.adminSections = exports.sectionsHome = void 0;
+exports.adminClients = exports.adminUsers = exports.adminProducts = exports.adminOrdersModel = exports.adminStatusIdentifiers = exports.adminOrderStatusModel = exports.adminDepartmentsModel = exports.adminJobsModel = exports.adminStatusModel = exports.adminSalesUnits = exports.adminCategory = exports.adminSections = exports.sectionsHome = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
 const connect_1 = __importDefault(require("../db/connect"));
 exports.sectionsHome = connect_1.default.define('ff_sections', {
@@ -109,6 +109,20 @@ exports.adminOrderStatusModel = connect_1.default.define('ff_order_statuses', {
         type: sequelize_typescript_1.DataType.STRING
     },
     code: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
+}, {
+    timestamps: false
+});
+exports.adminStatusIdentifiers = connect_1.default.define('ff_status_identifiers', {
+    id: {
+        primaryKey: true,
+        type: sequelize_typescript_1.DataType.NUMBER
+    },
+    name: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
+    description: {
         type: sequelize_typescript_1.DataType.STRING
     },
 }, {
