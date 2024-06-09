@@ -117,7 +117,6 @@ export interface orderDetailsInterface {
     igtf: number;
     totalBsd: number;
     totalUsd: number;
-
 }
 
 export interface urlParams {
@@ -271,6 +270,7 @@ export interface dataConfigurationWorkspaceInterface {
     jobs: jobsDeptsInterface[],
     departments: jobsDeptsInterface[],
     status: dataConfig[],
+    statusIdentifiers: statusIdentifiersInterface[],
     orderStatus: orderStatusesInterface[]
 }
 
@@ -290,6 +290,12 @@ export interface orderStatusesInterface{
     id: string,
     name: string,
     code: string,
+}
+
+export interface statusIdentifiersInterface{
+    id: string,
+    name: string,
+    description: string
 }
 
 export type ClientURLS = '/home'
