@@ -725,13 +725,18 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
                 if ((userKeyData === null || userKeyData === void 0 ? void 0 : userKeyData.dataValues.uuid) === orderDetail.dataValues.userId) {
                     console.log("TERCERA SENTENCIA");
                     let userId = orderDetail.dataValues.userId;
-                    if (status !== 'CONF' && status !== "PTE") {
+                    let currentStatus = orderDetail.dataValues.status;
+                    let orderConfirmed = orderDetail.dataValues.isOrderConfirmed;
+                    let orderPaid = orderDetail.dataValues.isOrderPaid;
+                    let paynumber = orderDetail.dataValues.payNumber.toString();
+                    if (currentStatus !== 0 && currentStatus !== 1 && orderPaid !== 0 && orderConfirmed !== 0 && paynumber.length !== 1) {
                         console.log("CUARTA SENTENCIA");
                         let statusValue;
                         orderStatus.forEach(statusCode => {
                             if (statusCode.dataValues.code === status) {
                                 statusValue = statusCode.dataValues.id;
                             }
+                            ;
                         });
                         if (statusValue !== undefined) {
                             yield admin_1.adminOrdersModel.update({ orderStatusId: statusValue }, {
@@ -740,10 +745,14 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
                                     userId: userId
                                 }
                             });
+                            res.status(201).end();
                         }
                         else {
                             res.status(403).json({ Message: "No es posible cambiar el estado porque falta un requisito." });
                         }
+                    }
+                    else {
+                        res.status(403).json({ Message: "No es posible cambiar el estado porque falta un requisito." });
                     }
                 }
             }
@@ -752,7 +761,6 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
     catch (_7) {
         res.status(500).json({ Message: 'Error al obtener el pedido.' });
     }
-    res.status(201).end();
 });
 exports.putOrderEdited = putOrderEdited;
 const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
