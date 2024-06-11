@@ -722,6 +722,7 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
             const orderDetail = yield admin_1.adminOrdersModel.findOne({ where: { orderId: orderId } });
             if (orderDetail !== null) {
                 console.log("SEGUNDA SENTENCIA");
+                console.log("userKeyData?.dataValues.uuid: ", userKeyData === null || userKeyData === void 0 ? void 0 : userKeyData.dataValues.uuid, "orderDetail.dataValues.userId: ", orderDetail.dataValues.userId);
                 if ((userKeyData === null || userKeyData === void 0 ? void 0 : userKeyData.dataValues.uuid) === orderDetail.dataValues.userId) {
                     console.log("TERCERA SENTENCIA");
                     let userId = orderDetail.dataValues.userId;
@@ -754,6 +755,9 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     else {
                         res.status(403).json({ Message: "No es posible cambiar el estado porque falta un requisito." });
                     }
+                }
+                else {
+                    res.status(404).json({ Message: "Existe error en la relación de los datos. " });
                 }
             }
         }
