@@ -622,6 +622,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(403).json({ Message: 'No se encontraron pedidos.' });
         }
         else {
+            const statusIdentifier = yield admin_1.adminStatusIdentifiers.findAll({ attributes: ['name'], order: [['name', 'ASC']] });
             const parsedListOrders = orders.map(order => {
                 order.dataValues.productsList = JSON.parse(order.dataValues.productsList);
                 return order;
@@ -631,10 +632,39 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                     where: { uuid: order.dataValues.userId },
                     attributes: ['rif', 'name', 'email', 'phone', 'address']
                 });
+                let checkOrderStatus = "";
+                if (order.dataValues.isOrderConfirmed == 0 && order.dataValues.isOrderPaid == 0) {
+                    checkOrderStatus = 'PTE';
+                }
+                else if (order.dataValues.isOrderConfirmed == 1 && order.dataValues.shippingAddress !== 0 && order.dataValues.isOrderPaid == 0) {
+                    checkOrderStatus = 'CONF';
+                }
+                else if (order.dataValues.isOrderConfirmed == 1 && order.dataValues.shippingAddress !== 0 && order.dataValues.isOrderPaid == 1) {
+                    checkOrderStatus = 'ENPROC';
+                }
+                else {
+                    res.status(500).json({ Message: "Comuníquese con el administrador." });
+                }
                 const currency = order.dataValues.currency === 0 ? 'Usd' : 'Bsd';
                 const totalPay = order.dataValues.currency === 0 ? order.dataValues.totalUsd : order.dataValues.totalBsd;
-                const status = order.dataValues.isOrderPaid === 0 ? 'PTE' : 'CONF';
                 const updatedProductsList = yield findProductsListsOrders(order.dataValues.productsList);
+                let colorIdentifier = '';
+                if (checkOrderStatus === 'PTE') {
+                    colorIdentifier = statusIdentifier[3].dataValues.name;
+                }
+                ;
+                if (checkOrderStatus === 'CONF' || checkOrderStatus === 'ENPROC' || checkOrderStatus === 'TRANSP') {
+                    colorIdentifier = statusIdentifier[1].dataValues.name;
+                }
+                ;
+                if (checkOrderStatus === 'ENT') {
+                    colorIdentifier = statusIdentifier[2].dataValues.name;
+                }
+                ;
+                if (checkOrderStatus === 'CANCEL' || checkOrderStatus === 'DEV') {
+                    colorIdentifier = statusIdentifier[0].dataValues.name;
+                }
+                ;
                 return {
                     orderId: order.dataValues.orderId,
                     rif: client === null || client === void 0 ? void 0 : client.dataValues.rif,
@@ -644,7 +674,10 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                     shippingAddress: order === null || order === void 0 ? void 0 : order.dataValues.shippingAddress,
                     totalPay: totalPay,
                     currency: currency,
-                    status: status,
+                    status: {
+                        code: checkOrderStatus,
+                        color: colorIdentifier
+                    },
                     lastUpdateDate: '',
                     productsList: updatedProductsList
                 };
@@ -722,7 +755,6 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
             const orderDetail = yield admin_1.adminOrdersModel.findOne({ where: { orderId: orderId } });
             if (orderDetail !== null) {
                 console.log("SEGUNDA SENTENCIA");
-                console.log("userKeyData?.dataValues.uuid: ", userKeyData === null || userKeyData === void 0 ? void 0 : userKeyData.dataValues.uuid, "orderDetail.dataValues.userId: ", orderDetail.dataValues.userId);
                 if ((userKeyData === null || userKeyData === void 0 ? void 0 : userKeyData.dataValues.uuid) === orderDetail.dataValues.userId) {
                     console.log("TERCERA SENTENCIA");
                     let userId = orderDetail.dataValues.userId;
