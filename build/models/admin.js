@@ -122,6 +122,9 @@ exports.adminStatusIdentifiers = connect_1.default.define('ff_status_identifiers
     name: {
         type: sequelize_typescript_1.DataType.STRING
     },
+    code: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
     description: {
         type: sequelize_typescript_1.DataType.STRING
     },
