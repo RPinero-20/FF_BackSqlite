@@ -621,7 +621,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(403).json({ Message: 'No se encontraron pedidos.' });
         }
         else {
-            const statusIdentifier = yield admin_1.adminStatusIdentifiers.findAll({ attributes: ['code'], order: [['code', 'ASC']] });
+            const statusIdentifier = yield admin_1.adminStatusIdentifiers.findAll({ attributes: ['name', 'code'], order: [['code', 'ASC']] });
             const parsedListOrders = orders.map(order => {
                 order.dataValues.productsList = JSON.parse(order.dataValues.productsList);
                 return order;
@@ -648,8 +648,10 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                 const totalPay = order.dataValues.currency === 0 ? order.dataValues.totalUsd : order.dataValues.totalBsd;
                 const updatedProductsList = yield findProductsListsOrders(order.dataValues.productsList);
                 let colorIdentifier = '';
+                let statusName = '';
                 if (checkOrderStatus === 'PTE') {
                     colorIdentifier = statusIdentifier[3].dataValues.code;
+                    statusName = statusIdentifier[3].dataValues.name;
                 }
                 ;
                 if (checkOrderStatus === 'CONF' || checkOrderStatus === 'ENPROC' || checkOrderStatus === 'TRANSP') {
@@ -675,6 +677,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                     currency: currency,
                     status: {
                         code: checkOrderStatus,
+                        name: statusName,
                         color: colorIdentifier
                     },
                     lastUpdateDate: '',
@@ -702,7 +705,7 @@ const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, fun
             res.status(404).json({ Message: 'No se encontró el pedido.' });
         }
         else {
-            const statusIdentifier = yield admin_1.adminStatusIdentifiers.findAll({ attributes: ['code'], order: [['code', 'ASC']] });
+            const statusIdentifier = yield admin_1.adminStatusIdentifiers.findAll({ attributes: ['name', 'code'], order: [['code', 'ASC']] });
             let checkOrderStatus = "";
             if (orderDetail.dataValues.isOrderConfirmed == 0 && orderDetail.dataValues.isOrderPaid == 0) {
                 checkOrderStatus = 'PTE';
@@ -721,8 +724,10 @@ const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, fun
             const totalPay = orderDetail.dataValues.currency === 0 ? orderDetail.dataValues.totalUsd : orderDetail.dataValues.totalBsd;
             const updatedProductsList = yield findProductsListsOrders(orderDetail.dataValues.productsList);
             let colorIdentifier = '';
+            let statusName = '';
             if (checkOrderStatus === 'PTE') {
                 colorIdentifier = statusIdentifier[3].dataValues.code;
+                statusName = statusIdentifier[3].dataValues.name;
             }
             ;
             if (checkOrderStatus === 'CONF' || checkOrderStatus === 'ENPROC' || checkOrderStatus === 'TRANSP') {
@@ -744,6 +749,7 @@ const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 currency: currency,
                 status: {
                     code: checkOrderStatus,
+                    name: statusName,
                     color: colorIdentifier
                 },
                 lastUpdateDate: '',
