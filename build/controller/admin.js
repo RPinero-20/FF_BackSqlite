@@ -286,7 +286,6 @@ const getUsuarios = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         else {
             const usuariosActualizados = usuarios
-                .filter((usuario) => usuario.dataValues.status)
                 .map((usuario) => {
                 return {
                     id: usuario.dataValues.id,
@@ -622,7 +621,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
             res.status(403).json({ Message: 'No se encontraron pedidos.' });
         }
         else {
-            const statusIdentifier = yield admin_1.adminStatusIdentifiers.findAll({ attributes: ['name'], order: [['name', 'ASC']] });
+            const statusIdentifier = yield admin_1.adminStatusIdentifiers.findAll({ attributes: ['code'], order: [['code', 'ASC']] });
             const parsedListOrders = orders.map(order => {
                 order.dataValues.productsList = JSON.parse(order.dataValues.productsList);
                 return order;
@@ -650,19 +649,19 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                 const updatedProductsList = yield findProductsListsOrders(order.dataValues.productsList);
                 let colorIdentifier = '';
                 if (checkOrderStatus === 'PTE') {
-                    colorIdentifier = statusIdentifier[3].dataValues.name;
+                    colorIdentifier = statusIdentifier[3].dataValues.code;
                 }
                 ;
                 if (checkOrderStatus === 'CONF' || checkOrderStatus === 'ENPROC' || checkOrderStatus === 'TRANSP') {
-                    colorIdentifier = statusIdentifier[1].dataValues.name;
+                    colorIdentifier = statusIdentifier[1].dataValues.code;
                 }
                 ;
                 if (checkOrderStatus === 'ENT') {
-                    colorIdentifier = statusIdentifier[2].dataValues.name;
+                    colorIdentifier = statusIdentifier[2].dataValues.code;
                 }
                 ;
                 if (checkOrderStatus === 'CANCEL' || checkOrderStatus === 'DEV') {
-                    colorIdentifier = statusIdentifier[0].dataValues.name;
+                    colorIdentifier = statusIdentifier[0].dataValues.code;
                 }
                 ;
                 return {
