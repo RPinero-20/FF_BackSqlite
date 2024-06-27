@@ -702,6 +702,7 @@ const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, fun
             res.status(404).json({ Message: 'No se encontró el pedido.' });
         }
         else {
+            const statusIdentifier = yield admin_1.adminStatusIdentifiers.findAll({ attributes: ['code'], order: [['code', 'ASC']] });
             let checkOrderStatus = "";
             if (orderDetail.dataValues.isOrderConfirmed == 0 && orderDetail.dataValues.isOrderPaid == 0) {
                 checkOrderStatus = 'PTE';
@@ -719,12 +720,32 @@ const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, fun
             const currency = orderDetail.dataValues.currency === 0 ? 'Usd' : 'Bsd';
             const totalPay = orderDetail.dataValues.currency === 0 ? orderDetail.dataValues.totalUsd : orderDetail.dataValues.totalBsd;
             const updatedProductsList = yield findProductsListsOrders(orderDetail.dataValues.productsList);
+            let colorIdentifier = '';
+            if (checkOrderStatus === 'PTE') {
+                colorIdentifier = statusIdentifier[3].dataValues.code;
+            }
+            ;
+            if (checkOrderStatus === 'CONF' || checkOrderStatus === 'ENPROC' || checkOrderStatus === 'TRANSP') {
+                colorIdentifier = statusIdentifier[1].dataValues.code;
+            }
+            ;
+            if (checkOrderStatus === 'ENT') {
+                colorIdentifier = statusIdentifier[2].dataValues.code;
+            }
+            ;
+            if (checkOrderStatus === 'CANCEL' || checkOrderStatus === 'DEV') {
+                colorIdentifier = statusIdentifier[0].dataValues.code;
+            }
+            ;
             const newOrderDetail = {
                 orderId: orderDetail.dataValues.orderId,
                 userId: orderDetail.dataValues.userId,
                 totalPay: totalPay,
                 currency: currency,
-                status: checkOrderStatus,
+                status: {
+                    code: checkOrderStatus,
+                    color: colorIdentifier
+                },
                 lastUpdateDate: '',
                 productsList: updatedProductsList
             };
@@ -858,6 +879,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const statusIdentifiersAll = dataStatusIdentifiers.map((identifiers) => ({
                 id: identifiers.dataValues.id.toString(),
                 name: identifiers.dataValues.name,
+                code: identifiers.dataValues.code,
                 description: identifiers.dataValues.description
             }));
             const userName = yield admin_2.adminUsers.findOne({
