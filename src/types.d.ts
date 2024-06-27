@@ -295,6 +295,7 @@ export interface orderStatusesInterface{
 export interface statusIdentifiersInterface{
     id: string,
     name: string,
+    code: string,
     description: string
 }
 
@@ -328,6 +329,7 @@ export type AdminURLS = '/home'
     | '/client'
     | '/orders'
     | '/order'
+    | '/downloadInvoice'
     | '/login';
 
 //revisar post y put de usuarios admin
