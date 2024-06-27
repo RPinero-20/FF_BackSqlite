@@ -35,7 +35,7 @@ exports.Usuario = connect_1.default.define('ff_users', {
     timestamps: false
 });
 exports.Clients = connect_1.default.define('ff_clients', {
-    id: {
+    uuid: {
         type: sequelize_1.DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
