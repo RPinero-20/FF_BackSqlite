@@ -677,8 +677,7 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                     currency: currency,
                     status: {
                         code: checkOrderStatus,
-                        name: statusName,
-                        color: colorIdentifier
+                        color: statusName,
                     },
                     lastUpdateDate: '',
                     productsList: updatedProductsList
@@ -749,8 +748,7 @@ const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, fun
                 currency: currency,
                 status: {
                     code: checkOrderStatus,
-                    name: statusName,
-                    color: colorIdentifier
+                    color: statusName
                 },
                 lastUpdateDate: '',
                 productsList: updatedProductsList
