@@ -656,14 +656,17 @@ const getOrdersDetails = (_req, res) => __awaiter(void 0, void 0, void 0, functi
                 ;
                 if (checkOrderStatus === 'CONF' || checkOrderStatus === 'ENPROC' || checkOrderStatus === 'TRANSP') {
                     colorIdentifier = statusIdentifier[1].dataValues.code;
+                    statusName = statusIdentifier[1].dataValues.name;
                 }
                 ;
                 if (checkOrderStatus === 'ENT') {
                     colorIdentifier = statusIdentifier[2].dataValues.code;
+                    statusName = statusIdentifier[2].dataValues.name;
                 }
                 ;
                 if (checkOrderStatus === 'CANCEL' || checkOrderStatus === 'DEV') {
                     colorIdentifier = statusIdentifier[0].dataValues.code;
+                    statusName = statusIdentifier[0].dataValues.name;
                 }
                 ;
                 return {
@@ -731,14 +734,17 @@ const getOrderDetailToEdit = (req, res) => __awaiter(void 0, void 0, void 0, fun
             ;
             if (checkOrderStatus === 'CONF' || checkOrderStatus === 'ENPROC' || checkOrderStatus === 'TRANSP') {
                 colorIdentifier = statusIdentifier[1].dataValues.code;
+                statusName = statusIdentifier[1].dataValues.name;
             }
             ;
             if (checkOrderStatus === 'ENT') {
                 colorIdentifier = statusIdentifier[2].dataValues.code;
+                statusName = statusIdentifier[2].dataValues.name;
             }
             ;
             if (checkOrderStatus === 'CANCEL' || checkOrderStatus === 'DEV') {
                 colorIdentifier = statusIdentifier[0].dataValues.code;
+                statusName = statusIdentifier[0].dataValues.name;
             }
             ;
             const newOrderDetail = {
