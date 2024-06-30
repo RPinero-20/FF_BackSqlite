@@ -5,7 +5,7 @@ const connect_1 = require("../db/connect");
 const admin_1 = require("../controller/admin");
 const admin_2 = require("../controller/admin");
 const admin_3 = require("../controller/admin");
-const adminDownloadInvoice_1 = require("../controller/adminDownloadInvoice");
+const admindownloadInvoice_1 = require("../controller/admindownloadInvoice");
 const adminRouter = (0, express_1.Router)();
 const homeUrl = '/home';
 const products = '/products';
@@ -60,7 +60,7 @@ adminRouter.get(toEditOrder, admin_1.getOrderDetailToEdit);
 adminRouter.put(editedOrder, admin_1.putOrderEdited);
 adminRouter.post(createOrder, admin_1.postOrderDetail);
 adminRouter.delete(delOrder, admin_1.deleteOrder);
-adminRouter.get(downloadInvoice, adminDownloadInvoice_1.getInvoice);
+adminRouter.get(downloadInvoice, admindownloadInvoice_1.getInvoice);
 adminRouter.post(loginUser, admin_3.postLogin);
 exports.default = adminRouter;
 //# sourceMappingURL=admin.js.map

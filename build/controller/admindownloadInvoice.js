@@ -94,4 +94,4 @@ const getInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getInvoice = getInvoice;
-//# sourceMappingURL=adminDownloadInvoice.js.map
+//# sourceMappingURL=admindownloadInvoice.js.map
