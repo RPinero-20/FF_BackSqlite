@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postLogin = exports.deleteOrder = exports.putOrderEdited = exports.postOrderDetail = exports.getOrderDetailToEdit = exports.getOrdersDetails = exports.deleteClient = exports.putClient = exports.postClient = exports.getClientToEdit = exports.getClients = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.getAdminCategories = void 0;
+exports.postLogin = exports.deleteOrder = exports.putOrderEdited = exports.postOrderDetail = exports.getOrderDetailToEdit = exports.getOrdersDetails = exports.deleteClient = exports.putClient = exports.postClient = exports.getClientToEdit = exports.getClients = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.deleteCategory = exports.putCategory = exports.postCategory = exports.getAdminCategories = void 0;
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
 const storage_c_1 = __importDefault(require("../services/storage_c"));
@@ -31,7 +31,7 @@ const fs_1 = __importDefault(require("fs"));
 const buyListConfirm_1 = require("../models/buyListConfirm");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const categoryList = yield admin_1.adminCategory.findAll();
+        const categoryList = yield admin_1.adminCategory.findAll({ attributes: ['id', 'sectionID'], order: [['id', 'ASC']] });
         res.json(categoryList);
     }
     catch (error) {
@@ -42,6 +42,92 @@ const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getAdminCategories = getAdminCategories;
+const postCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    const { name, sectionID } = req.body;
+    try {
+        if (body !== undefined) {
+            if (!name || !sectionID) {
+                res.status(400).json({ error: 'Todos los campos son requeridos.' });
+                return;
+            }
+            else {
+                yield admin_1.adminCategory.create(body);
+                res.json(body);
+            }
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: 'Error interno, contacte al administrador'
+        });
+    }
+});
+exports.postCategory = postCategory;
+const putCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    const categoryId = req.query.id;
+    const { name, sectionID } = req.body;
+    try {
+        if (body !== undefined && categoryId !== undefined) {
+            if (!name || !sectionID) {
+                res.status(400).json({ error: 'Todos los campos son requeridos.' });
+                return;
+            }
+            else {
+                const categoryToEdit = yield admin_1.adminCategory.findOne({
+                    where: {
+                        id: categoryId
+                    }
+                });
+                if (!categoryToEdit) {
+                    res.status(403).json({ msg: 'No existe categoría: ' + body.name });
+                    return;
+                }
+                else {
+                    yield categoryToEdit.update(body);
+                    res.status(201).end();
+                    return;
+                }
+            }
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: 'Comuníquese con el administrador.' });
+    }
+});
+exports.putCategory = putCategory;
+const deleteCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const categoryId = req.query.id;
+    try {
+        if (categoryId !== undefined) {
+            const categoryToDelete = yield admin_1.adminCategory.findByPk(categoryId);
+            console.log("DELETE CATEGORY", categoryToDelete);
+            const productFound = yield admin_1.adminProducts.findOne({
+                where: {
+                    categoryID: categoryId
+                }
+            });
+            if (!productFound) {
+                categoryToDelete === null || categoryToDelete === void 0 ? void 0 : categoryToDelete.destroy();
+                res.status(201).end();
+            }
+            else {
+                res.status(403).json({ msg: "No es posible eliminar, existen productos asociados." });
+            }
+        }
+        else {
+            res.status(404).json({ msg: "No se puede procesar la petición." });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ Message: 'Comuníquese con el administrador.' });
+    }
+});
+exports.deleteCategory = deleteCategory;
 const getAdminSections = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sectionList = yield admin_1.adminSections.findAll();
