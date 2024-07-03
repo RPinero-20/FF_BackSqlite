@@ -299,6 +299,11 @@ export interface statusIdentifiersInterface{
     description: string
 }
 
+export interface adminCategorySection {
+    categoryId: string,
+    sectionId: string
+}
+
 export type ClientURLS = '/home'
     | '/productDetail'
     | '/categories'
