@@ -33,8 +33,8 @@ const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         const categoryList = yield admin_1.adminCategory.findAll({ attributes: ['id', 'sectionID'], order: [['id', 'ASC']] });
         const catSecID = categoryList.map((items) => ({
-            categoryId: items.dataValues.id,
-            sectionId: items.dataValues.sectionID
+            categoryId: items.dataValues.id.toString(),
+            sectionId: items.dataValues.sectionID.toString()
         }));
         res.json(catSecID);
     }
