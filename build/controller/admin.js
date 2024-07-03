@@ -32,7 +32,11 @@ const buyListConfirm_1 = require("../models/buyListConfirm");
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll({ attributes: ['id', 'sectionID'], order: [['id', 'ASC']] });
-        res.json(categoryList);
+        const catSecID = categoryList.map((items) => ({
+            categoryId: items.dataValues.id,
+            sectionId: items.dataValues.sectionID
+        }));
+        res.json(catSecID);
     }
     catch (error) {
         console.error(error);
