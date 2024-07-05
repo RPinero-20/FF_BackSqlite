@@ -85,6 +85,9 @@ const getInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         else {
             let userId = temp_Id;
             console.log(":::::::::: ", userId);
+            res.status(403).json({
+                msg: 'No se encuentra lo solicitado o los datos no son correctos.'
+            });
         }
     }
     catch (error) {
