@@ -73,6 +73,7 @@ const putCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const body = req.body;
     const categoryId = req.query.id;
     const { name, sectionID } = req.body;
+    console.log(body);
     try {
         if (body !== undefined && categoryId !== undefined) {
             if (!name || !sectionID) {
@@ -90,7 +91,12 @@ const putCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     return;
                 }
                 else {
-                    yield categoryToEdit.update(body);
+                    yield categoryToEdit.update(body, {
+                        where: {
+                            name: body.name,
+                            sectionID: body.sectionId
+                        }
+                    });
                     res.status(201).end();
                     return;
                 }
