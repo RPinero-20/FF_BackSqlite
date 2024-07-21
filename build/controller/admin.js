@@ -48,10 +48,10 @@ const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, func
 exports.getAdminCategories = getAdminCategories;
 const postCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
-    const { name, sectionID } = req.body;
+    const { name, sectionId } = req.body;
     try {
         if (body !== undefined) {
-            if (!name || !sectionID) {
+            if (!name || !sectionId) {
                 res.status(400).json({ error: 'Todos los campos son requeridos.' });
                 return;
             }
@@ -72,11 +72,11 @@ exports.postCategory = postCategory;
 const putCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     const categoryId = req.query.id;
-    const { name, sectionID } = req.body;
-    console.log(body);
+    const { name, sectionId } = req.body;
+    console.log("::::::::::: ", body, name, sectionId);
     try {
         if (body !== undefined && categoryId !== undefined) {
-            if (!name || !sectionID) {
+            if (!name || !sectionId) {
                 res.status(400).json({ error: 'Todos los campos son requeridos.' });
                 return;
             }
@@ -94,7 +94,7 @@ const putCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     yield categoryToEdit.update(body, {
                         where: {
                             name: body.name,
-                            sectionID: body.sectionId
+                            sectionId: body.sectionId
                         }
                     });
                     res.status(201).end();
