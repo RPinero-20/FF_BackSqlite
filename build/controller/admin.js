@@ -49,6 +49,7 @@ exports.getAdminCategories = getAdminCategories;
 const postCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     const { name, sectionId } = req.body;
+    console.log(":.......... ", body);
     try {
         if (body !== undefined) {
             if (!name || !sectionId) {
@@ -56,8 +57,12 @@ const postCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 return;
             }
             else {
-                yield admin_1.adminCategory.create(body);
-                res.json(body);
+                const newCategory = {
+                    name: body.name,
+                    sectionID: body.sectionId
+                };
+                yield admin_1.adminCategory.create(newCategory);
+                res.json(newCategory);
             }
         }
     }
