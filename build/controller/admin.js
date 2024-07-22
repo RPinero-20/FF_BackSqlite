@@ -24,11 +24,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postLogin = exports.deleteOrder = exports.putOrderEdited = exports.postOrderDetail = exports.getOrderDetailToEdit = exports.getOrdersDetails = exports.deleteClient = exports.putClient = exports.postClient = exports.getClientToEdit = exports.getClients = exports.deleteUsuario = exports.putUsuario = exports.postUsuario = exports.getUserToEdit = exports.getUsuario = exports.getUsuarios = exports.deleteProduct = exports.postProduct = exports.putProductEdited = exports.getProductToEditDetail = exports.getProducts = exports.getToCreateProduct = exports.getAdminSections = exports.deleteCategory = exports.putCategory = exports.postCategory = exports.getAdminCategories = void 0;
+const uuid_1 = require("uuid");
 const admin_1 = require("../models/admin");
 const admin_2 = require("../models/admin");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const storage_c_1 = __importDefault(require("../services/storage_c"));
 const fs_1 = __importDefault(require("fs"));
 const buyListConfirm_1 = require("../models/buyListConfirm");
+const config_1 = __importDefault(require("../config"));
 const getAdminCategories = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categoryList = yield admin_1.adminCategory.findAll({ attributes: ['id', 'sectionID'], order: [['id', 'ASC']] });
@@ -483,11 +486,11 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
         else {
             const usuario = {
-                uuid: body.id,
+                uuid: (0, uuid_1.v4)(),
                 name: body.name,
                 idNumber: body.idNumber,
                 email: body.email,
-                password: (body === null || body === void 0 ? void 0 : body.password) || '',
+                password: yield (0, admin_1.encryptPassword)(body.password),
                 phone: body.phone,
                 status: body.status,
                 job: body.job,
@@ -603,6 +606,7 @@ const getClientToEdit = (req, res) => __awaiter(void 0, void 0, void 0, function
                 address: findClient.dataValues.address || '',
                 represent: findClient.dataValues.represent || '',
                 status: findClient.dataValues.status || '',
+                codeId: findClient.dataValues.codeId,
             };
             console.log("client to edit: ", clientToEdit);
             res.json(clientToEdit);
@@ -625,8 +629,9 @@ const postClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
         if (!findClient) {
             console.log("POR AQUI:::::");
+            let clientUid = (0, uuid_1.v4)();
             const client = {
-                uuid: body.id,
+                uuid: clientUid,
                 rif: body.rif,
                 name: body.name,
                 email: body.email,
@@ -634,7 +639,8 @@ const postClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 phone2: body.phone2 || '',
                 address: body.address || '',
                 represent: body.represent || '',
-                password: body.password || '',
+                codeId: clientUid,
+                password: yield (0, admin_1.encryptPassword)(body.password),
                 status: body.status ? 1 : 0,
             };
             console.log(">>>>>>>> CLIENT: ", client);
@@ -937,13 +943,27 @@ const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.deleteOrder = deleteOrder;
 const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = req.body;
-    console.log(body);
-    const { userName, password } = body;
-    const email = 'arcaneJinx@correo.com';
-    const pass = '123456';
     try {
-        if (userName === email && password === pass) {
+        const body = req.body;
+        console.log(body);
+        const { userName, password } = body;
+        const userFound = yield admin_2.adminUsers.findOne({
+            where: {
+                email: userName,
+            },
+        });
+        const email = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.email;
+        let savedPassword = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.password;
+        let receivedPassword = password;
+        const pass = yield (0, admin_1.comparePassword)(receivedPassword, savedPassword);
+        if (!pass) {
+            res.status(401).json({ token: null, Message: 'Invalid password or user.' });
+            return;
+        }
+        if (userFound !== undefined && userFound !== null) {
+            const token = jsonwebtoken_1.default.sign({ id: userFound.dataValues.uuid }, config_1.default.SECRET, {
+                expiresIn: 86400
+            });
             const dataCategories = yield admin_1.adminCategory.findAll();
             const categoriesAll = dataCategories.map((categories) => ({
                 id: categories.dataValues.id.toString(),
@@ -998,11 +1018,11 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     email: email,
                     status: true
                 },
-                attributes: ['id', 'name', 'status']
+                attributes: ['id', 'uuid', 'name', 'status']
             });
             console.log(userName);
             const dataWorkspace = {
-                token: 'aafd0270-8358-4467-98da-d8c1df931d35',
+                token: token,
                 userName: userName === null || userName === void 0 ? void 0 : userName.dataValues.name,
                 message: 'Usuario autenticado',
                 isLogged: userName === null || userName === void 0 ? void 0 : userName.dataValues.status,
