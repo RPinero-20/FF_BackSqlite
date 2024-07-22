@@ -1022,7 +1022,6 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             console.log(userName);
             const dataWorkspace = {
-                token: token,
                 userName: userName === null || userName === void 0 ? void 0 : userName.dataValues.name,
                 message: 'Usuario autenticado',
                 isLogged: userName === null || userName === void 0 ? void 0 : userName.dataValues.status,
@@ -1035,7 +1034,14 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 statusIdentifiers: statusIdentifiersAll,
                 orderStatus: orderStatusAll
             };
-            res.status(200).json(dataWorkspace);
+            res.cookie('ff_cookie', token, {
+                httpOnly: true,
+                maxAge: 86400,
+                secure: false,
+                sameSite: 'lax',
+                path: '/'
+            });
+            res.status(200).cookie('nombre_cookie', token).json(dataWorkspace);
         }
         else {
             res.status(403).json({
