@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const morgan_1 = __importDefault(require("morgan"));
 const home_1 = __importDefault(require("../routes/home"));
 const admin_1 = __importDefault(require("../routes/admin"));
 const cors_1 = __importDefault(require("cors"));
@@ -21,6 +22,7 @@ class Server {
     middlewares() {
         this.app.use((0, cors_1.default)());
         this.app.use(express_1.default.json());
+        this.app.use((0, morgan_1.default)('dev'));
         this.app.use('/assets/images/productsThumbnails', express_1.default.static('public/assets/images/productsThumbnails'));
     }
     routes() {
