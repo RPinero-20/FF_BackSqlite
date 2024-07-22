@@ -146,7 +146,8 @@ export interface adminUsersInterfaceModel {
     status: boolean,
     job: string,
     department: string,
-    address: string
+    address: string,
+    roles?: string
 }
 
 export interface adminProductsInterfaceModel {
@@ -192,7 +193,9 @@ export interface clientUsersInterfaceModel {
     address: string,
     represent: string,
     password?: string,
-    status: number,
+    status?: number,
+    codeId: string,
+    roles?: string
 }
 
 
@@ -260,7 +263,7 @@ export interface infoOrderDetailPrintInterface {
 }
 
 export interface dataConfigurationWorkspaceInterface {
-    token: string,
+    // token: string,
     userName: string,
     message: string,
     isLogged: true,
