@@ -16,20 +16,20 @@ export const verifyToken = async (req, res, next) => {
 
         const decoded = jwt.verify(token, config.SECRET)
         req.id = decoded.id; // la consulta a getusuarios no retorna porque {"Message": "Moderator attributes required"}
-        console.log(decoded);
+        console.log("decoded in jwt :::::::::: ", decoded);
     
         const user = await adminUsers.findOne({
             where: {
                 // uuid: id
-                id: decoded.id
+                uuid: decoded.id
             } // {password: 0} OJO ACÁ PUEDE SER UTIL PARA NO USAR O ENVIAR EL PASS DEL USUARIO EN LA VALIDACIÓN ENTRE CAMBIOS DE RUTAS
         });
-    
+        console.log("USER in jwt ::::::::::: ", user)
         if(!user) {
             res.status(400).json({Message: 'User not found'});
             return
         }
-    
+
         next();
 
     } catch (error) {
@@ -39,11 +39,11 @@ export const verifyToken = async (req, res, next) => {
 
 
 export const IsModerator = async (req, res, next) => {
-    console.log("ASDASDASD")
+    console.log("IS MODERATOR");
     const user = await adminUsers.findOne({
         where: {
             //uuid: req.id
-            id: req.id 
+            uuid: req.id 
         },
         attributes: ['email', 'roles']
     });// AUNQUE LA VARIABLE decoded FUE DECLARADA EN VERIFYTOKEN, 
@@ -73,7 +73,7 @@ export const IsAdmin = async (req, res, next) => {
     const user = await adminUsers.findOne({
         where: {
             //uuid: req.id
-            id: req.id 
+            uuid: req.id 
         },
         attributes: ['email', 'roles']
     });// AUNQUE LA VARIABLE decoded FUE DECLARADA EN VERIFYTOKEN, 
@@ -82,7 +82,7 @@ export const IsAdmin = async (req, res, next) => {
 
     const roles = await Role.findOne({
         where: {
-            id: user.dataValues.roles
+            value: user.dataValues.roles
         },
         attributes: ['name', 'value']
     });
