@@ -964,6 +964,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const token = jsonwebtoken_1.default.sign({ id: userFound.dataValues.uuid }, config_1.default.SECRET, {
                 expiresIn: 86400
             });
+            console.log("TOKEN::::::::: ", token);
             const dataCategories = yield admin_1.adminCategory.findAll();
             const categoriesAll = dataCategories.map((categories) => ({
                 id: categories.dataValues.id.toString(),
@@ -1022,6 +1023,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
             console.log(userName);
             const dataWorkspace = {
+                token: token,
                 userName: userName === null || userName === void 0 ? void 0 : userName.dataValues.name,
                 message: 'Usuario autenticado',
                 isLogged: userName === null || userName === void 0 ? void 0 : userName.dataValues.status,
@@ -1034,14 +1036,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 statusIdentifiers: statusIdentifiersAll,
                 orderStatus: orderStatusAll
             };
-            res.cookie('ff_cookie', token, {
-                httpOnly: true,
-                maxAge: 86400,
-                secure: false,
-                sameSite: 'lax',
-                path: '/'
-            });
-            res.status(200).cookie('nombre_cookie', token).json(dataWorkspace);
+            res.status(200).json(dataWorkspace);
         }
         else {
             res.status(403).json({
