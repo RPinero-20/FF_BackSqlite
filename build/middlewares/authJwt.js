@@ -27,12 +27,13 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         }
         const decoded = jsonwebtoken_1.default.verify(token, config_1.default.SECRET);
         req.id = decoded.id;
-        console.log(decoded);
+        console.log("decoded in jwt :::::::::: ", decoded);
         const user = yield admin_1.adminUsers.findOne({
             where: {
-                id: decoded.id
+                uuid: decoded.id
             }
         });
+        console.log("USER in jwt ::::::::::: ", user);
         if (!user) {
             res.status(400).json({ Message: 'User not found' });
             return;
@@ -45,10 +46,10 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.verifyToken = verifyToken;
 const IsModerator = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("ASDASDASD");
+    console.log("IS MODERATOR");
     const user = yield admin_1.adminUsers.findOne({
         where: {
-            id: req.id
+            uuid: req.id
         },
         attributes: ['email', 'roles']
     });
@@ -71,13 +72,13 @@ const IsAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     console.log("QWEQWEQWE");
     const user = yield admin_1.adminUsers.findOne({
         where: {
-            id: req.id
+            uuid: req.id
         },
         attributes: ['email', 'roles']
     });
     const roles = yield role_1.default.findOne({
         where: {
-            id: user.dataValues.roles
+            value: user.dataValues.roles
         },
         attributes: ['name', 'value']
     });
