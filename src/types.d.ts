@@ -263,7 +263,7 @@ export interface infoOrderDetailPrintInterface {
 }
 
 export interface dataConfigurationWorkspaceInterface {
-    // token: string,
+    token: string,
     userName: string,
     message: string,
     isLogged: true,
