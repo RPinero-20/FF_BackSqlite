@@ -46,7 +46,6 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.verifyToken = verifyToken;
 const IsModerator = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("IS MODERATOR");
     const user = yield admin_1.adminUsers.findOne({
         where: {
             uuid: req.id
@@ -69,7 +68,6 @@ const IsModerator = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.IsModerator = IsModerator;
 const IsAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("QWEQWEQWE");
     const user = yield admin_1.adminUsers.findOne({
         where: {
             uuid: req.id
