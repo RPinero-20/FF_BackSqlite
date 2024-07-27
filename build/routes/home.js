@@ -16,6 +16,7 @@ const clientAcces_1 = require("../controller/clientAcces");
 const connect_1 = require("../db/connect");
 const payConfirm_1 = require("../controller/payConfirm");
 const downloadInvoice_1 = require("../controller/downloadInvoice");
+const middlewares_1 = require("../middlewares");
 const clientRouter = (0, express_1.Router)();
 const homeUrl = "/home";
 const categories = "/categories";
@@ -49,19 +50,19 @@ clientRouter.get(userAuthInfo, (_req, res) => {
     }
 });
 clientRouter.get(homeUrl, home_1.getProducts);
-clientRouter.get(userInfo, clientAcces_1.getUserInfo);
+clientRouter.get(userInfo, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], clientAcces_1.getUserInfo);
 clientRouter.get(categories, categories_1.getCategories);
 clientRouter.get(productsList, productsList_1.getFnToFind);
 clientRouter.get(productDetail, productDetail_1.getProductDetail);
-clientRouter.post(payresume, payresume_1.getPayResume);
-clientRouter.put(payresume, payresume_1.getPayResume);
-clientRouter.put(getAddress, payresume_1.putShippingAddress);
-clientRouter.get(getAddress, payresume_1.getshippingAddress);
-clientRouter.get(lastConfirmation, payresume_1.getFinishedOrder);
-clientRouter.put(lastConfirmation, buyListConfirm_1.putOrderConfirmed);
-clientRouter.get(paymentDetail, buyListConfirm_1.getPaymentDetail);
-clientRouter.get(userOrders, userListOrders_1.getUserListOrders);
-clientRouter.get(paymentConfirmation, payConfirm_1.getBanksListInformation);
-clientRouter.get(downloadInvoice, downloadInvoice_1.getInvoice);
+clientRouter.post(payresume, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.getPayResume);
+clientRouter.put(payresume, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.getPayResume);
+clientRouter.put(getAddress, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.putShippingAddress);
+clientRouter.get(getAddress, [middlewares_1.authJwtStore.IsClient, middlewares_1.authJwtStore.IsClient], payresume_1.getshippingAddress);
+clientRouter.get(lastConfirmation, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.getFinishedOrder);
+clientRouter.put(lastConfirmation, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], buyListConfirm_1.putOrderConfirmed);
+clientRouter.get(paymentDetail, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], buyListConfirm_1.getPaymentDetail);
+clientRouter.get(userOrders, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], userListOrders_1.getUserListOrders);
+clientRouter.get(paymentConfirmation, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payConfirm_1.getBanksListInformation);
+clientRouter.get(downloadInvoice, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], downloadInvoice_1.getInvoice);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map
