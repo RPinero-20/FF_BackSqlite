@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import config from '../config'
-import { adminUsers } from '../models/admin';
+import { adminClients, adminUsers } from '../models/admin';
 import Role from '../models/role';
 
 export const verifyToken = async (req, res, next) => {
@@ -17,7 +17,7 @@ export const verifyToken = async (req, res, next) => {
         const decoded = jwt.verify(token, config.SECRET)
         req.id = decoded.id; // la consulta a getusuarios no retorna porque {"Message": "Moderator attributes required"}
         console.log("decoded in jwt :::::::::: ", decoded);
-    
+
         const user = await adminUsers.findOne({
             where: {
                 // uuid: id
@@ -39,7 +39,7 @@ export const verifyToken = async (req, res, next) => {
 
 
 export const IsModerator = async (req, res, next) => {
-    console.log("IS MODERATOR");
+
     const user = await adminUsers.findOne({
         where: {
             //uuid: req.id
@@ -69,7 +69,7 @@ export const IsModerator = async (req, res, next) => {
 
 
 export const IsAdmin = async (req, res, next) => {
-    console.log("QWEQWEQWE")
+
     const user = await adminUsers.findOne({
         where: {
             //uuid: req.id
