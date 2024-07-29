@@ -1,10 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const home_1 = require("../controller/home");
 const productDetail_1 = require("../controller/productDetail");
 const categories_1 = require("../controller/categories");
@@ -27,7 +23,8 @@ const getAddress = "/addressConfirmation";
 const lastConfirmation = "/lastConfirmationOrder";
 const paymentDetail = "/paymentDetail";
 const paymentConfirmation = "/paymentConfirmation";
-const userInfo = "/userInfo";
+const signUp = "/signUp";
+const signIn = "/signIn";
 const userAuthInfo = "/userAuthInfo";
 const userOrders = "/userOrders";
 const downloadInvoice = "/downloadInvoice";
@@ -35,25 +32,13 @@ clientRouter.use((_req, _res, next) => {
     (0, connect_1.conectToDB)();
     next();
 });
-clientRouter.get(userAuthInfo, (_req, res) => {
-    try {
-        const payload = {
-            userType: "guest",
-        };
-        const secretKey = "la_clave_secreta";
-        const token = jsonwebtoken_1.default.sign(payload, secretKey, { expiresIn: "1h" });
-        res.setHeader("Authorization", `Bearer ${token}`);
-        res.json({ isLogged: false });
-    }
-    catch (error) {
-        res.status(500).json({ error: "Error al generar el token de invitado" });
-    }
-});
-clientRouter.get(homeUrl, home_1.getProducts);
-clientRouter.get(userInfo, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], clientAcces_1.getUserInfo);
-clientRouter.get(categories, categories_1.getCategories);
-clientRouter.get(productsList, productsList_1.getFnToFind);
-clientRouter.get(productDetail, productDetail_1.getProductDetail);
+clientRouter.get(homeUrl, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], home_1.getProducts);
+clientRouter.get(userAuthInfo, clientAcces_1.userAuthGuest);
+clientRouter.post(signUp, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], clientAcces_1.clientSignUp);
+clientRouter.post(signIn, clientAcces_1.clientSignIn);
+clientRouter.get(categories, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest, middlewares_1.authJwtStore.IsClient], categories_1.getCategories);
+clientRouter.get(productsList, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest, middlewares_1.authJwtStore.IsClient], productsList_1.getFnToFind);
+clientRouter.get(productDetail, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest, middlewares_1.authJwtStore.IsClient], productDetail_1.getProductDetail);
 clientRouter.post(payresume, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.getPayResume);
 clientRouter.put(payresume, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.getPayResume);
 clientRouter.put(getAddress, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.putShippingAddress);
