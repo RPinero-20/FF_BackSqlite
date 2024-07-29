@@ -490,7 +490,7 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 name: body.name,
                 idNumber: body.idNumber,
                 email: body.email,
-                password: yield (0, admin_1.encryptPassword)(body.password),
+                password: yield (0, admin_1.encryptPassword)(body.password.toString()),
                 phone: body.phone,
                 status: body.status,
                 job: body.job,
@@ -642,6 +642,7 @@ const postClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 codeId: clientUid,
                 password: yield (0, admin_1.encryptPassword)(body.password),
                 status: body.status ? 1 : 0,
+                rol: 2
             };
             console.log(">>>>>>>> CLIENT: ", client);
             yield admin_1.adminClients.create(client);
