@@ -321,7 +321,8 @@ export type ClientURLS = '/home'
     | '/userAuthInfo'
     | '/userOrders'
     | '/downloadInvoice'
-    | 'loginUser';
+    | '/signUp'
+    | '/signIn';
 
 export type AdminURLS = '/home'
     | '/products'
