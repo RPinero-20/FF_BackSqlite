@@ -29,7 +29,7 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     email: body.email
                 }
             });
-            console.log(userFound);
+            console.log("User Found::: ", userFound);
             if (!userFound) {
                 const newUser = {
                     uuid: body.uuid,
@@ -45,7 +45,7 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     codeId: body.uuid,
                     roles: body.rol
                 };
-                console.log(newUser);
+                console.log("New User::: ", newUser);
                 if (roles) {
                     const foundRole = yield role_1.default.findOne({
                         where: {
@@ -64,7 +64,7 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     newUser.roles = role === null || role === void 0 ? void 0 : role.dataValues.id.toString();
                 }
                 const savedUser = yield usuario_1.default.create(newUser);
-                console.log(savedUser);
+                console.log("Saved User", savedUser);
                 const token = jsonwebtoken_1.default.sign({ id: savedUser.dataValues.id }, config_1.default.SECRET, {
                     expiresIn: 86400
                 });
@@ -96,7 +96,7 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(400).json({ Message: "User not found." });
         return;
     }
-    console.log(userFound);
+    console.log("sign in user found::: ", userFound);
     const matchPassword = yield (0, admin_1.comparePassword)(req.body.password, userFound.dataValues.password);
     if (!matchPassword) {
         res.status(401).json({ token: null, Message: 'Invalid password or user.' });

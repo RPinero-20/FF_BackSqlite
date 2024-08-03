@@ -946,7 +946,7 @@ exports.deleteOrder = deleteOrder;
 const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
-        console.log(body);
+        console.log("Login admin: ", body);
         const { userName, password } = body;
         const userFound = yield admin_2.adminUsers.findOne({
             where: {
@@ -1022,7 +1022,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 attributes: ['id', 'uuid', 'name', 'status']
             });
-            console.log(userName);
+            console.log("User Name::: ", userName);
             const dataWorkspace = {
                 token: token,
                 userName: userName === null || userName === void 0 ? void 0 : userName.dataValues.name,

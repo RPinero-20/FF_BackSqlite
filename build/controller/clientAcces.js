@@ -19,31 +19,42 @@ const clientSession_1 = require("../models/clientSession");
 const usuario_1 = __importDefault(require("../models/usuario"));
 const admin_1 = require("../models/admin");
 const uuid_1 = require("uuid");
-const userAuthGuest = (req, res) => {
+const userAuthGuest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const receivedToken = req.headers["x-access-token"];
-        if (receivedToken === undefined || receivedToken === '') {
+        console.log('receivedToken::: ', receivedToken);
+        if (!receivedToken) {
             const payload = {
                 id: 3,
             };
             const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
-            clientSession_1.guestSession.create({ validToken: token });
+            yield clientSession_1.guestSession.create({ validToken: token });
             console.log("New TOKEN:::: ", token);
             res.json({ token: token, isLogged: false });
         }
         else {
-            const token = clientSession_1.guestSession.findOne({
+            const token = yield clientSession_1.guestSession.findOne({
                 where: {
                     validToken: receivedToken
                 }
             });
+            if (token) {
+                res.json({ token: token.dataValues.validToken, isLogged: false });
+            }
+            else {
+                const payload = {
+                    id: 3,
+                };
+                const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
+                res.json({ token: token, isLogged: false });
+            }
             console.log("verify TOKEN:::: ", token);
         }
     }
     catch (error) {
         res.status(500).json({ error: "Error al generar el token de invitado" });
     }
-};
+});
 exports.userAuthGuest = userAuthGuest;
 const clientSignUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
