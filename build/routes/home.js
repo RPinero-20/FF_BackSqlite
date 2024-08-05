@@ -35,12 +35,12 @@ clientRouter.use((_req, _res, next) => {
 clientRouter.get(homeUrl, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], home_1.getProducts);
 clientRouter.get(userAuthInfo, clientAcces_1.userAuthGuest);
 clientRouter.post(signUp, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], clientAcces_1.clientSignUp);
-clientRouter.post(signIn, clientAcces_1.clientSignIn);
-clientRouter.get(categories, [middlewares_1.authJwtStore.verifyToken], categories_1.getCategories);
-clientRouter.get(productsList, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest, middlewares_1.authJwtStore.IsClient], productsList_1.getFnToFind);
-clientRouter.get(productDetail, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest, middlewares_1.authJwtStore.IsClient], productDetail_1.getProductDetail);
-clientRouter.post(payresume, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.getPayResume);
-clientRouter.put(payresume, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.getPayResume);
+clientRouter.post(signIn, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], clientAcces_1.clientSignIn);
+clientRouter.get(categories, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], categories_1.getCategories);
+clientRouter.get(productsList, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], productsList_1.getFnToFind);
+clientRouter.get(productDetail, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], productDetail_1.getProductDetail);
+clientRouter.post(payresume, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], payresume_1.getPayResume);
+clientRouter.put(payresume, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], payresume_1.getPayResume);
 clientRouter.put(getAddress, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.putShippingAddress);
 clientRouter.get(getAddress, [middlewares_1.authJwtStore.IsClient, middlewares_1.authJwtStore.IsClient], payresume_1.getshippingAddress);
 clientRouter.get(lastConfirmation, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsClient], payresume_1.getFinishedOrder);

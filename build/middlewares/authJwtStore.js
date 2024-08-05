@@ -20,54 +20,85 @@ const role_1 = __importDefault(require("../models/role"));
 const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const token = req.headers["x-access-token"];
-        console.log(token);
+        console.log("TOKEN TO VERIFY:::: ", token);
         if (!token) {
             res.status(403).json({ Message: "No token provided." });
             return;
         }
-        const decoded = jsonwebtoken_1.default.verify(token, config_1.default.SECRET);
-        req.id = decoded.id;
-        console.log("decoded in jwtStore :::::::::: ", decoded);
-        const user = yield admin_1.adminClients.findOne({
-            where: {
-                uuid: decoded.id
+        else {
+            console.log("::::::PASÓ POR ELSE DE VERIFYTOKEN::::::");
+            const decoded = jsonwebtoken_1.default.verify(token, config_1.default.SECRET);
+            console.log("decoded in jwtStore :::::::::: ", decoded);
+            req.id = decoded.id;
+            const user = yield admin_1.adminClients.findOne({
+                where: {
+                    uuid: decoded.id
+                }
+            });
+            console.log("CLIENT in jwtStore ::::::::::: ", user);
+            if (!user) {
+                next();
             }
-        });
-        console.log("CLIENT in jwtStore ::::::::::: ", user);
-        if (!user) {
-            res.status(400).json({ Message: 'User not found' });
-            return;
         }
-        next();
     }
     catch (error) {
-        res.status(401).json({ Message: 'Unauthorized' });
+        const payload = { id: 3, };
+        const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
+        console.log("New TOKEN:::: ", token);
+        res.status(201).json({ token: token, isLogged: false });
     }
 });
 exports.verifyToken = verifyToken;
 const IsGuest = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("GUEST");
+    console.log("GUEST::: ", req.id);
+    try {
+        const roleValue = req.id;
+        const roles = yield role_1.default.findOne({
+            where: {
+                value: roleValue
+            },
+            attributes: ['name', 'value']
+        });
+        console.log("USER ROLES::: ", roles);
+        if (roles.dataValues.value === req.id) {
+            next();
+        }
+        else {
+            res.status(401).json({ Message: 'Unauthorized' });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ Message: "Internal Error Server." });
+    }
 });
 exports.IsGuest = IsGuest;
 const IsClient = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield admin_1.adminClients.findOne({
-        where: {
-            uuid: req.id
-        },
-        attributes: ['email', 'roles']
-    });
-    const roles = yield role_1.default.findOne({
-        where: {
-            value: user.dataValues.roles
-        },
-        attributes: ['name', 'value']
-    });
-    console.log("USER ROLES::: ", roles);
-    if (roles.dataValues.value === 2) {
-        next();
+    try {
+        if (req.id === 3) {
+            next();
+        }
+        const user = yield admin_1.adminClients.findOne({
+            where: {
+                uuid: req.id
+            },
+            attributes: ['email', 'roles']
+        });
+        const roles = yield role_1.default.findOne({
+            where: {
+                value: user.dataValues.roles
+            },
+            attributes: ['name', 'value']
+        });
+        console.log("USER ROLES::: ", roles);
+        if (roles.dataValues.value === 2) {
+            next();
+        }
+        else {
+            res.status(403).json({ Message: "Moderator attributes required." });
+        }
     }
-    else {
-        res.status(403).json({ Message: "Moderator attributes required" });
+    catch (error) {
+        res.status(500).json({ Message: "Internal Server Error." });
     }
 });
 exports.IsClient = IsClient;

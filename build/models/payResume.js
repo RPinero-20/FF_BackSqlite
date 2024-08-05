@@ -12,7 +12,7 @@ exports.cartListpreOrder = connect_1.default.define('ff_pre_orders', {
         type: sequelize_typescript_1.DataType.NUMBER
     },
     userId: {
-        type: sequelize_typescript_1.DataType.NUMBER
+        type: sequelize_typescript_1.DataType.STRING
     },
     payResume: {
         type: sequelize_typescript_1.DataType.TEXT
@@ -26,7 +26,7 @@ exports.cartListOrderDetailModel = connect_1.default.define('ff_order_details', 
         type: sequelize_typescript_1.DataType.NUMBER
     },
     userId: {
-        type: sequelize_typescript_1.DataType.NUMBER
+        type: sequelize_typescript_1.DataType.STRING
     },
     productsList: {
         type: sequelize_typescript_1.DataType.STRING
