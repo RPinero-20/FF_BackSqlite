@@ -15,25 +15,21 @@ const home_1 = require("../models/home");
 const getProductDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _q;
     const params = req.query;
-    if (params != undefined) {
-        if (params.hasOwnProperty('id') === true && params.hasOwnProperty('code') === true) {
-            const productID = Number(params.id);
-            const productCode = (_q = params.code) !== null && _q !== void 0 ? _q : '';
-            try {
+    try {
+        if (params != undefined) {
+            if (params.hasOwnProperty('id') === true && params.hasOwnProperty('code') === true) {
+                const productID = Number(params.id);
+                const productCode = (_q = params.code) !== null && _q !== void 0 ? _q : '';
                 res.json(yield getDetailByIDnCode(productID, productCode));
             }
-            catch (error) {
-                res.status(500).json({ error: 'Internal Server Error' });
+            else {
+                res.status(400).json({ error: 'Producto no encontrado' });
             }
             ;
         }
-        else {
-            res.status(400).json({ error: 'Producto no encontrado' });
-        }
-        ;
     }
-    else {
-        res.status(400).json({ error: 'Page not found' });
+    catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
     }
     ;
 });

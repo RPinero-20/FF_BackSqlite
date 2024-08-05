@@ -33,6 +33,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         body.currency = currencyValue;
         console.log("getPayResume body::::::::::: ", body);
+        let userUid = body.userId;
         if (body.orderId.length === 0) {
             const orderRequest = body;
             const listObjects = yield (0, payResumeCalc_1.calcProducts)(orderRequest);

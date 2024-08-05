@@ -24,13 +24,12 @@ const userAuthGuest = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const receivedToken = req.headers["x-access-token"];
         console.log('receivedToken::: ', receivedToken);
         if (!receivedToken) {
-            const payload = {
-                id: 3,
-            };
+            const payload = { id: 3, };
+            let clientUid = (0, uuid_1.v4)();
             const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
-            yield clientSession_1.guestSession.create({ validToken: token });
-            console.log("New TOKEN:::: ", token);
-            res.json({ token: token, isLogged: false });
+            yield clientSession_1.guestSession.create({ uuid: clientUid, validToken: token });
+            console.log("L23 New TOKEN:::: ", token);
+            res.status(201).json({ userId: clientUid, token: token, isLogged: false });
         }
         else {
             const token = yield clientSession_1.guestSession.findOne({
@@ -39,16 +38,16 @@ const userAuthGuest = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 }
             });
             if (token) {
-                res.json({ token: token.dataValues.validToken, isLogged: false });
+                res.status(201).json({ token: token.dataValues.validToken, isLogged: false });
             }
             else {
-                const payload = {
-                    id: 3,
-                };
+                const payload = { id: 3, };
+                let clientUid = (0, uuid_1.v4)();
                 const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
-                res.json({ token: token, isLogged: false });
+                yield clientSession_1.guestSession.create({ uuid: clientUid, validToken: token });
+                console.log("L39 New TOKEN:::: ", token);
+                res.json({ userId: clientUid, token: token, isLogged: false });
             }
-            console.log("verify TOKEN:::: ", token);
         }
     }
     catch (error) {
