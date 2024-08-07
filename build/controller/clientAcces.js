@@ -19,6 +19,7 @@ const clientSession_1 = require("../models/clientSession");
 const usuario_1 = __importDefault(require("../models/usuario"));
 const admin_1 = require("../models/admin");
 const uuid_1 = require("uuid");
+const authJwtStore_1 = require("../middlewares/authJwtStore");
 const userAuthGuest = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const receivedToken = req.headers["x-access-token"];
@@ -27,27 +28,12 @@ const userAuthGuest = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             const payload = { id: 3, };
             let clientUid = (0, uuid_1.v4)();
             const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
-            yield clientSession_1.guestSession.create({ uuid: clientUid, validToken: token });
+            yield clientSession_1.guestSession.create({ uuid: clientUid, validToken: token, isLogged: false });
             console.log("L23 New TOKEN:::: ", token);
-            res.status(201).json({ userId: clientUid, token: token, isLogged: false });
+            res.status(201).json({ "token": token, "isLogged": false }).end();
         }
         else {
-            const token = yield clientSession_1.guestSession.findOne({
-                where: {
-                    validToken: receivedToken
-                }
-            });
-            if (token) {
-                res.status(201).json({ token: token.dataValues.validToken, isLogged: false });
-            }
-            else {
-                const payload = { id: 3, };
-                let clientUid = (0, uuid_1.v4)();
-                const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
-                yield clientSession_1.guestSession.create({ uuid: clientUid, validToken: token });
-                console.log("L39 New TOKEN:::: ", token);
-                res.json({ userId: clientUid, token: token, isLogged: false });
-            }
+            (0, authJwtStore_1.verifyToken)();
         }
     }
     catch (error) {
@@ -67,19 +53,19 @@ const clientSignUp = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
         if (!findClient) {
             let clientUid = (0, uuid_1.v4)();
-            console.log("POR AQUI::::: UUID", clientUid);
+            console.log("CREANDO CLIENTE::::: UUID", clientUid);
             const client = {
                 uuid: clientUid,
                 rif: body.rif,
-                name: body.name,
+                name: `${body.firstName} ${body.lastName}`,
                 email: body.email,
                 phone: body.phone,
                 phone2: body.phone2 || '',
                 address: body.address || '',
-                represent: body.represent || '',
+                represent: body.company || '',
                 codeId: clientUid,
                 password: yield (0, admin_1.encryptPassword)(body.password.toString()),
-                status: body.status ? 1 : 0,
+                status: 1,
             };
             console.log(">>>>>>>> CLIENT: ", client);
             yield usuario_1.default.create(client);
@@ -96,15 +82,16 @@ const clientSignUp = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.clientSignUp = clientSignUp;
 const clientSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("BODY ::::: ", req.body);
         const body = req.body;
-        const { userName, password } = body;
-        console.log("BODY ::::: ", userName, password);
+        const { user, password } = body;
         const userFound = yield admin_1.adminClients.findOne({
             where: {
-                email: userName,
+                email: user,
             },
         });
-        const email = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.email;
+        console.log("User Found SIGNIN:::: ", userFound);
+        const userName = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.name;
         let savedPassword = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.password;
         let receivedPassword = password;
         const pass = yield (0, admin_1.comparePassword)(receivedPassword, savedPassword);
@@ -112,12 +99,12 @@ const clientSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(401).json({ token: null, Message: 'Invalid password or user.' });
             return;
         }
-        if (userFound !== undefined && userFound !== null) {
+        if (userFound) {
             const token = jsonwebtoken_1.default.sign({ id: userFound.dataValues.uuid }, config_1.default.SECRET, {
                 expiresIn: 86400
             });
             console.log("TOKEN::::::::: ", token);
-            res.status(200).json({ "token": token, "isLogged": true });
+            res.status(201).json({ "userName": userName, "token": token, "isLogged": true });
         }
         else {
             res.status(403).json({
