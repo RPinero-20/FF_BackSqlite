@@ -35,7 +35,7 @@ clientRouter.use((_req, _res, next) => {
 clientRouter.get(homeUrl, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], home_1.getProducts);
 clientRouter.get(userAuthInfo, clientAcces_1.userAuthGuest);
 clientRouter.post(signUp, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], clientAcces_1.clientSignUp);
-clientRouter.post(signIn, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], clientAcces_1.clientSignIn);
+clientRouter.post(signIn, clientAcces_1.clientSignIn);
 clientRouter.get(categories, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], categories_1.getCategories);
 clientRouter.get(productsList, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], productsList_1.getFnToFind);
 clientRouter.get(productDetail, [middlewares_1.authJwtStore.verifyToken, middlewares_1.authJwtStore.IsGuest], productDetail_1.getProductDetail);

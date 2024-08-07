@@ -17,35 +17,23 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config"));
 const admin_1 = require("../models/admin");
 const role_1 = __importDefault(require("../models/role"));
+const uuid_1 = require("uuid");
+const clientSession_1 = require("../models/clientSession");
 const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const token = req.headers["x-access-token"];
-        console.log("TOKEN TO VERIFY:::: ", token);
+        console.log(token);
         if (!token) {
             res.status(403).json({ Message: "No token provided." });
             return;
         }
-        else {
-            console.log("::::::PASÓ POR ELSE DE VERIFYTOKEN::::::");
-            const decoded = jsonwebtoken_1.default.verify(token, config_1.default.SECRET);
-            console.log("decoded in jwtStore :::::::::: ", decoded);
-            req.id = decoded.id;
-            const user = yield admin_1.adminClients.findOne({
-                where: {
-                    uuid: decoded.id
-                }
-            });
-            console.log("CLIENT in jwtStore ::::::::::: ", user);
-            if (!user) {
-                next();
-            }
-        }
+        const decoded = jsonwebtoken_1.default.verify(token, config_1.default.SECRET);
+        req.id = decoded.id;
+        console.log("decoded in jwt :::::::::: ", decoded);
+        next();
     }
     catch (error) {
-        const payload = { id: 3, };
-        const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
-        console.log("New TOKEN:::: ", token);
-        res.status(201).json({ token: token, isLogged: false });
+        return res.status(401).json({ Message: 'Unauthorized' });
     }
 });
 exports.verifyToken = verifyToken;
@@ -68,15 +56,12 @@ const IsGuest = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
     catch (error) {
-        res.status(500).json({ Message: "Internal Error Server." });
+        res.status(500).json({ Message: "Internal Error Server. Guest" });
     }
 });
 exports.IsGuest = IsGuest;
 const IsClient = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (req.id === 3) {
-            next();
-        }
         const user = yield admin_1.adminClients.findOne({
             where: {
                 uuid: req.id
@@ -98,7 +83,7 @@ const IsClient = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         }
     }
     catch (error) {
-        res.status(500).json({ Message: "Internal Server Error." });
+        res.status(500).json({ Message: "Internal Server Error. Client" });
     }
 });
 exports.IsClient = IsClient;

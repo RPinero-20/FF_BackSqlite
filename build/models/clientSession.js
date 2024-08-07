@@ -18,5 +18,8 @@ exports.guestSession = connect_1.default.define('ff_client_sessions', {
     validToken: {
         type: sequelize_typescript_1.DataType.STRING
     },
+    isLogged: {
+        type: sequelize_typescript_1.DataType.NUMBER
+    },
 });
 //# sourceMappingURL=clientSession.js.map
