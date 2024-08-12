@@ -38,7 +38,6 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const orderRequest = body;
             const listObjects = yield (0, payResumeCalc_1.calcProducts)(orderRequest);
             const quoteOrder = listObjects.preOrder;
-            body.userId = parseInt(body.userId);
             const payResume = quoteOrder.payResume;
             const productsCalculated = listObjects.productsCalculated;
             const existProduct = (0, payResumeCalc_1.checkStock)(productsCalculated);
@@ -73,7 +72,6 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 const orderRequest = body;
                 const listObjects = yield (0, payResumeCalc_1.calcProducts)(orderRequest);
                 const quoteOrder = listObjects.preOrder;
-                body.userId = parseInt(body.userId);
                 const payResume = quoteOrder.payResume;
                 console.log("PAYRESUME :::::::: ", payResume);
                 const orderToReturn = {
@@ -106,7 +104,6 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const orderRequest = body;
             const listObjects = yield (0, payResumeCalc_1.calcProducts)(orderRequest);
             const quoteOrder = listObjects.preOrder;
-            body.userId = parseInt(body.userId);
             const payResume = quoteOrder.payResume;
             const productsCalculated = listObjects.productsCalculated;
             const existProduct = (0, payResumeCalc_1.checkStock)(productsCalculated);
@@ -175,7 +172,6 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     const orderRequest = body;
                     const listObjects = yield (0, payResumeCalc_1.calcProducts)(orderRequest);
                     const quoteOrder = listObjects.preOrder;
-                    body.userId = parseInt(body.userId);
                     const payResume = quoteOrder.payResume;
                     console.log("Quizás :::::::: payResume, body ", payResume, body);
                     const orderData = {

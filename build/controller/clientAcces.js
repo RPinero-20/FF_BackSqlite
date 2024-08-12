@@ -25,15 +25,10 @@ const userAuthGuest = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const receivedToken = req.headers["x-access-token"];
         console.log('receivedToken::: ', receivedToken);
         if (!receivedToken) {
-            const payload = { id: 3, };
-            let clientUid = (0, uuid_1.v4)();
-            const token = jsonwebtoken_1.default.sign(payload, config_1.default.SECRET, { expiresIn: "1h" });
-            yield clientSession_1.guestSession.create({ uuid: clientUid, validToken: token, isLogged: false });
-            console.log("L23 New TOKEN:::: ", token);
-            res.status(201).json({ "token": token, "isLogged": false }).end();
+            (0, authJwtStore_1.verifyToken)(req, res);
         }
         else {
-            (0, authJwtStore_1.verifyToken)();
+            (0, authJwtStore_1.verifyToken)(req, res);
         }
     }
     catch (error) {
@@ -90,6 +85,10 @@ const clientSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 email: user,
             },
         });
+        if (!userFound) {
+            res.status(401).json({ token: null, Message: 'Invalid password or user.' });
+            return;
+        }
         console.log("User Found SIGNIN:::: ", userFound);
         const userName = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.name;
         let savedPassword = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.password;
@@ -100,11 +99,13 @@ const clientSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return;
         }
         if (userFound) {
-            const token = jsonwebtoken_1.default.sign({ id: userFound.dataValues.uuid }, config_1.default.SECRET, {
-                expiresIn: 86400
-            });
-            console.log("TOKEN::::::::: ", token);
-            res.status(201).json({ "userName": userName, "token": token, "isLogged": true });
+            if (userFound.dataValues.status !== false) {
+                const token = jsonwebtoken_1.default.sign({ id: userFound.dataValues.uuid }, config_1.default.SECRET, {
+                    expiresIn: 86400
+                });
+                yield clientSession_1.guestSession.create({ uuid: userFound.dataValues.uuid, validToken: token, isLogged: true });
+                res.status(201).json({ "userName": userName, "token": token, "isLogged": true });
+            }
         }
         else {
             res.status(403).json({
@@ -115,7 +116,7 @@ const clientSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     catch (error) {
         res.status(500).json({
-            msg: 'Comuníquese con el administrador.'
+            msg: 'Login error, code: unknown.'
         });
     }
 });
