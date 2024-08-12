@@ -9,7 +9,8 @@ const connect_1 = __importDefault(require("../db/connect"));
 exports.cartListpreOrder = connect_1.default.define('ff_pre_orders', {
     id: {
         primaryKey: true,
-        type: sequelize_typescript_1.DataType.NUMBER
+        type: sequelize_typescript_1.DataType.NUMBER,
+        autoIncrement: true
     },
     userId: {
         type: sequelize_typescript_1.DataType.STRING
