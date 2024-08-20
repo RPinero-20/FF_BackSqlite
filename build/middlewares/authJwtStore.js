@@ -40,7 +40,7 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         }
     }
     catch (error) {
-        return res.status(401).json({ Message: 'Not a valid token' });
+        return res.status(201).json({ "userName": "", "token": "", "isLogged": false });
     }
 });
 exports.verifyToken = verifyToken;
