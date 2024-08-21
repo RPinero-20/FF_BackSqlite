@@ -25,10 +25,10 @@ const userAuthGuest = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const receivedToken = req.headers["x-access-token"];
         console.log('receivedToken::: ', receivedToken);
         if (!receivedToken) {
-            (0, authJwtStore_1.verifyToken)(req, res);
+            (0, authJwtStore_1.verifyTokenClient)(req, res);
         }
         else {
-            (0, authJwtStore_1.verifyToken)(req, res);
+            (0, authJwtStore_1.verifyTokenClient)(req, res);
         }
     }
     catch (error) {
