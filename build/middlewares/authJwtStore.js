@@ -47,15 +47,20 @@ exports.verifyToken = verifyToken;
 const verifyTokenClient = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers["x-access-token"];
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, config_1.default.SECRET);
-        req.id = decoded.id;
-        const userClient = yield admin_1.adminClients.findOne({
-            where: {
-                uuid: decoded.id
-            }
-        });
-        res.status(201).json({ "userName": userClient.dataValues.name, "token": token, "isLogged": true });
-        next();
+        if (!token) {
+            res.status(201).json({ "userName": "", "token": "", "isLogged": false });
+        }
+        else {
+            const decoded = jsonwebtoken_1.default.verify(token, config_1.default.SECRET);
+            req.id = decoded.id;
+            const userClient = yield admin_1.adminClients.findOne({
+                where: {
+                    uuid: decoded.id
+                }
+            });
+            res.status(201).json({ "userName": userClient.dataValues.name, "token": token, "isLogged": true });
+            next();
+        }
     }
     catch (error) {
         res.status(401).json({
