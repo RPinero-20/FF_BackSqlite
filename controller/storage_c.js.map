@@ -1,0 +1,1 @@
+{"version":3,"file":"storage_c.js","sourceRoot":"","sources":["../../controller/storage_c.ts"],"names":[],"mappings":";;;;;AAAA,oDAA4B;AAG5B,MAAM,OAAO,GAAG,gBAAM,CAAC,WAAW,CAAC;IAC/B,WAAW,EAAE,6CAA6C;IAC1D,QAAQ,EAAE,CAAC,IAAI,EAAE,IAAI,EAAE,EAAE,EAAE,EAAE;QACzB,EAAE,CAAC,IAAI,EAAE,IAAI,CAAC,YAAY,CAAC,CAAC;IAChC,CAAC;CACJ,CAAC,CAAC;AAEH,kBAAe,OAAO,CAAC"}
