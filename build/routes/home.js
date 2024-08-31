@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const home_1 = require("../controller/home");
@@ -28,10 +37,149 @@ const signIn = "/signIn";
 const userAuthInfo = "/userAuthInfo";
 const userOrders = "/userOrders";
 const downloadInvoice = "/downloadInvoice";
-clientRouter.use((_req, _res, next) => {
+clientRouter.use((_req, _res, next) => __awaiter(void 0, void 0, void 0, function* () {
     (0, connect_1.conectToDB)();
-    next();
-});
+    const publicUrl = [homeUrl, userAuthInfo, categories, productsList, productDetail, payresume, signUp, signIn];
+    const privateUrl = [getAddress, lastConfirmation, paymentDetail, userOrders, paymentConfirmation, downloadInvoice];
+    const requestedUrl = _req.path;
+    console.log("    requestedUrl", requestedUrl);
+    const token = _req.headers["x-access-token"];
+    if (privateUrl.includes(requestedUrl)) {
+        switch (requestedUrl) {
+            case getAddress:
+                const validAccess = yield middlewares_1.authJwtStore.validToken(token);
+                const validClient = yield middlewares_1.authJwtStore.validClient(validAccess === null || validAccess === void 0 ? void 0 : validAccess.uuid);
+                console.log("    No hacer nada", validAccess, validClient);
+                if (_req.method === 'GET') {
+                    if ((validAccess === null || validAccess === void 0 ? void 0 : validAccess.verified) && validClient) {
+                        console.log("    NEXT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                else if (_req.method === 'PUT') {
+                    if ((validAccess === null || validAccess === void 0 ? void 0 : validAccess.verified) && validClient) {
+                        console.log("    Procesando PUT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                else {
+                    _res.status(405).json({ message: "Método no permitido." });
+                }
+                break;
+            case lastConfirmation:
+                const validA = yield middlewares_1.authJwtStore.validToken(token);
+                const validC = yield middlewares_1.authJwtStore.validClient(validA === null || validA === void 0 ? void 0 : validA.uuid);
+                console.log("    lastConfirmation", validA, validC);
+                if (_req.method === 'GET') {
+                    if ((validA === null || validA === void 0 ? void 0 : validA.verified) && validC) {
+                        console.log("    NEXT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                else if (_req.method === 'PUT') {
+                    if ((validA === null || validA === void 0 ? void 0 : validA.verified) && validC) {
+                        console.log("    Procesando PUT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                else {
+                    _res.status(405).json({ message: "Método no permitido." });
+                }
+                break;
+            case paymentDetail:
+                const verifyAccess = yield middlewares_1.authJwtStore.validToken(token);
+                const verifyClient = yield middlewares_1.authJwtStore.validClient(verifyAccess === null || verifyAccess === void 0 ? void 0 : verifyAccess.uuid);
+                console.log("    paymentDetail", verifyAccess, verifyClient);
+                if (_req.method === 'GET') {
+                    if ((verifyAccess === null || verifyAccess === void 0 ? void 0 : verifyAccess.verified) && verifyClient) {
+                        console.log("    NEXT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                else if (_req.method === 'PUT') {
+                    if ((verifyAccess === null || verifyAccess === void 0 ? void 0 : verifyAccess.verified) && verifyClient) {
+                        console.log("    Procesando PUT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                else {
+                    _res.status(405).json({ message: "Método no permitido." });
+                }
+                break;
+            case userOrders:
+                const verifyAcc = yield middlewares_1.authJwtStore.validToken(token);
+                const verifyCli = yield middlewares_1.authJwtStore.validClient(verifyAcc === null || verifyAcc === void 0 ? void 0 : verifyAcc.uuid);
+                console.log("    userOrders", verifyAcc, verifyCli);
+                if (_req.method === 'GET') {
+                    if ((verifyAcc === null || verifyAcc === void 0 ? void 0 : verifyAcc.verified) && verifyCli) {
+                        console.log("    NEXT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                break;
+            case paymentConfirmation:
+                const verifyA = yield middlewares_1.authJwtStore.validToken(token);
+                const verifyC = yield middlewares_1.authJwtStore.validClient(verifyA === null || verifyA === void 0 ? void 0 : verifyA.uuid);
+                console.log("    paymentConfirmation", verifyA, verifyC);
+                if (_req.method === 'GET') {
+                    if ((verifyA === null || verifyA === void 0 ? void 0 : verifyA.verified) && verifyC) {
+                        console.log("    NEXT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                break;
+            case downloadInvoice:
+                const verifyT = yield middlewares_1.authJwtStore.validToken(token);
+                const verifC = yield middlewares_1.authJwtStore.validClient(verifyT === null || verifyT === void 0 ? void 0 : verifyT.uuid);
+                console.log("    downloadInvoice", verifyT, verifC);
+                if (_req.method === 'GET') {
+                    if ((verifyT === null || verifyT === void 0 ? void 0 : verifyT.verified) && verifC) {
+                        console.log("    NEXT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                break;
+            default:
+                console.log("Estado desconocido");
+        }
+    }
+    else {
+        if (publicUrl.includes(requestedUrl)) {
+            console.log("    URL pública", requestedUrl);
+            next();
+        }
+        else {
+            _res.status(404).json({ message: "Ruta no encontrada." });
+        }
+    }
+}));
 clientRouter.get(homeUrl, home_1.getProducts);
 clientRouter.get(userAuthInfo, clientAcces_1.userAuthGuest);
 clientRouter.post(signUp, clientAcces_1.clientSignUp);
@@ -41,13 +189,13 @@ clientRouter.get(productsList, productsList_1.getFnToFind);
 clientRouter.get(productDetail, productDetail_1.getProductDetail);
 clientRouter.post(payresume, payresume_1.getPayResume);
 clientRouter.put(payresume, payresume_1.getPayResume);
-clientRouter.put(getAddress, [middlewares_1.authJwtStore.verifyTokenClient, middlewares_1.authJwtStore.IsClient], payresume_1.putShippingAddress);
-clientRouter.get(getAddress, [middlewares_1.authJwtStore.verifyTokenClient, middlewares_1.authJwtStore.IsClient], payresume_1.getshippingAddress);
-clientRouter.put(lastConfirmation, [middlewares_1.authJwtStore.verifyTokenClient, middlewares_1.authJwtStore.IsClient], buyListConfirm_1.putOrderConfirmed);
-clientRouter.get(lastConfirmation, [middlewares_1.authJwtStore.verifyTokenClient, middlewares_1.authJwtStore.IsClient], payresume_1.getFinishedOrder);
-clientRouter.get(paymentDetail, [middlewares_1.authJwtStore.verifyTokenClient, middlewares_1.authJwtStore.IsClient], buyListConfirm_1.getPaymentDetail);
-clientRouter.get(userOrders, [middlewares_1.authJwtStore.verifyTokenClient, middlewares_1.authJwtStore.IsClient], userListOrders_1.getUserListOrders);
-clientRouter.get(paymentConfirmation, [middlewares_1.authJwtStore.verifyTokenClient, middlewares_1.authJwtStore.IsClient], payConfirm_1.getBanksListInformation);
-clientRouter.get(downloadInvoice, [middlewares_1.authJwtStore.verifyTokenClient, middlewares_1.authJwtStore.IsClient], downloadInvoice_1.getInvoice);
+clientRouter.get(getAddress, payresume_1.getshippingAddress);
+clientRouter.put(getAddress, payresume_1.putShippingAddress);
+clientRouter.put(lastConfirmation, buyListConfirm_1.putOrderConfirmed);
+clientRouter.get(lastConfirmation, payresume_1.getFinishedOrder);
+clientRouter.get(paymentDetail, buyListConfirm_1.getPaymentDetail);
+clientRouter.get(userOrders, userListOrders_1.getUserListOrders);
+clientRouter.get(paymentConfirmation, payConfirm_1.getBanksListInformation);
+clientRouter.get(downloadInvoice, downloadInvoice_1.getInvoice);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map
