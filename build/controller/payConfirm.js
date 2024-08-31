@@ -11,7 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBanksListInformation = void 0;
 const buyListConfirm_1 = require("../models/buyListConfirm");
-const getBanksListInformation = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const authJwtStore_1 = require("../middlewares/authJwtStore");
+const getBanksListInformation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = req.headers["x-access-token"];
+    let userId = "";
+    if (token) {
+        userId = yield (0, authJwtStore_1.userInfo)(token);
+    }
     try {
         const banksList = yield buyListConfirm_1.paymentDetailsModel.findAll({ attributes: { exclude: ['id'] } });
         res.status(200).json({ banksList });

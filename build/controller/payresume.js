@@ -14,8 +14,13 @@ const payResume_1 = require("../models/payResume");
 const payResumeCalc_1 = require("./payResumeCalc");
 const usuario_1 = require("../models/usuario");
 const buyListConfirm_1 = require("../models/buyListConfirm");
+const authJwtStore_1 = require("../middlewares/authJwtStore");
 const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
+    const token = req.headers["x-access-token"];
+    if (token) {
+        body.userId = yield (0, authJwtStore_1.userInfo)(token);
+    }
     for (let key in body) {
         if (body[key] === null) {
             body[key] = 0;
@@ -224,22 +229,29 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getPayResume = getPayResume;
 const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const params = req.query;
-    console.log("getShippingAddress PARAMS :::::::::: ", params);
-    if (params !== undefined) {
-        if (params.hasOwnProperty('id') === true) {
-            try {
-                const shippingAddress = yield usuario_1.Clients.findByPk(params.id);
-                console.log(shippingAddress === null || shippingAddress === void 0 ? void 0 : shippingAddress.dataValues.address);
-                res.json({ "shippingAddress": shippingAddress === null || shippingAddress === void 0 ? void 0 : shippingAddress.dataValues.address });
+    const token = req.headers["x-access-token"];
+    const userId = yield (0, authJwtStore_1.userInfo)(token);
+    console.log("getShippingAddress PARAMS :::::::::: ", userId);
+    try {
+        if (userId) {
+            const shippingAddress = yield usuario_1.Clients.findByPk(userId);
+            if (shippingAddress) {
+                console.log(shippingAddress.dataValues.address);
+                res.status(200).json({ "shippingAddress": shippingAddress.dataValues.address });
             }
-            catch (error) {
-                console.error(error);
-                res.status(500).json({
-                    msg: 'Error interno contacte al administrador.'
-                });
+            else {
+                res.status(404).json({ msg: 'Dirección de envío no encontrada.' });
             }
         }
+        else {
+            res.status(403).json({ msg: 'No se encuentra información de usuario.' });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({
+            msg: 'Error interno, contacte al administrador.'
+        });
     }
 });
 exports.getshippingAddress = getshippingAddress;
@@ -258,7 +270,7 @@ function updateShippingAddress(clientID, orderID, newShippingAddress) {
         else {
             const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress }, {
                 where: {
-                    userId: parseInt(clientID),
+                    userId: clientID,
                     orderId: orderID
                 }
             });
@@ -269,9 +281,10 @@ function updateShippingAddress(clientID, orderID, newShippingAddress) {
 }
 const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const params = req.query;
+    const token = req.headers["x-access-token"];
+    const userId = yield (0, authJwtStore_1.userInfo)(token);
     const { body } = req;
     if (body !== undefined) {
-        const userId = body.id;
         const orderId = body.orderId;
         const newAddr = body.shippingAddress;
         try {

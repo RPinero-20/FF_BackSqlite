@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserListOrders = void 0;
 const userListOrders_1 = require("../models/userListOrders");
 const buyListConfirm_1 = require("../models/buyListConfirm");
+const authJwtStore_1 = require("../middlewares/authJwtStore");
 function findProductsListsOrders(wishProductList) {
     return __awaiter(this, void 0, void 0, function* () {
         const productList = [];
@@ -34,8 +35,12 @@ function findProductsListsOrders(wishProductList) {
     });
 }
 const getUserListOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.query;
-    console.log(userId);
+    const token = req.headers["x-access-token"];
+    let userId = "";
+    if (token) {
+        userId = yield (0, authJwtStore_1.userInfo)(token);
+    }
+    console.log("    getUserListOrders: ", userId);
     if (userId !== undefined) {
         try {
             const userListOrders = yield userListOrders_1.userListOrdersModel.findAll({

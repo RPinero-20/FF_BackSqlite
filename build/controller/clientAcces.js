@@ -103,8 +103,10 @@ const clientSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 const token = jsonwebtoken_1.default.sign({ id: userFound.dataValues.uuid }, config_1.default.SECRET, {
                     expiresIn: 86400
                 });
+                console.log("TOKEN::::::::: ", token);
                 yield clientSession_1.guestSession.create({ uuid: userFound.dataValues.uuid, validToken: token, isLogged: true });
-                res.status(201).json({ "userName": userName, "token": token, "isLogged": true });
+                console.log({ userName: userName, token: token, isLogged: true });
+                res.status(201).json({ userName: userName, token: token, isLogged: true });
             }
         }
         else {

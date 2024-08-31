@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postBuyList = exports.getPaymentDetail = exports.putOrderConfirmed = void 0;
 const buyListConfirm_1 = require("../models/buyListConfirm");
+const authJwtStore_1 = require("../middlewares/authJwtStore");
 const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     const orderId = req.query;
@@ -54,7 +55,11 @@ const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.putOrderConfirmed = putOrderConfirmed;
 const getPaymentDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let userId = req.query.id;
+    const token = req.headers["x-access-token"];
+    let userId = "";
+    if (token) {
+        userId = yield (0, authJwtStore_1.userInfo)(token);
+    }
     console.log("getPaymentDetail USERID :::::::: ", userId);
     try {
         if (userId != undefined) {
