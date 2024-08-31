@@ -15,7 +15,10 @@ const productDetail_1 = require("../models/productDetail");
 const services_1 = require("../services");
 const authJwtStore_1 = require("../middlewares/authJwtStore");
 const getInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = yield (0, authJwtStore_1.userInfo)(req.query.id);
+    const mordida = req.query.id;
+    console.log("  mordida  ", mordida);
+    const token = req.headers["x-access-token"];
+    const userId = yield (0, authJwtStore_1.userInfo)(token);
     const orderId = req.query.orderId;
     const dominio = req.get('host');
     try {
