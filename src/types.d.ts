@@ -179,7 +179,7 @@ export interface adminLoginUserInterfaceModel {
 }
 
 export interface clientLoginUserInterfaceModel {
-    userName: string,
+    user: string,
     password: string
 }
 
@@ -306,6 +306,7 @@ export interface adminCategorySection {
     categoryId: string,
     sectionId: string
 }
+
 
 export type ClientURLS = '/home'
     | '/productDetail'
