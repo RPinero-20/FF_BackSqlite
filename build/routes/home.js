@@ -141,10 +141,16 @@ clientRouter.use((_req, _res, next) => __awaiter(void 0, void 0, void 0, functio
             case paymentConfirmation:
                 const verifyA = yield middlewares_1.authJwtStore.validToken(token);
                 const verifyC = yield middlewares_1.authJwtStore.validClient(verifyA === null || verifyA === void 0 ? void 0 : verifyA.uuid);
-                console.log("    paymentConfirmation", verifyA, verifyC);
                 if (_req.method === 'GET') {
                     if ((verifyA === null || verifyA === void 0 ? void 0 : verifyA.verified) && verifyC) {
-                        console.log("    NEXT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                else if (_req.method === 'POST') {
+                    if ((verifyA === null || verifyA === void 0 ? void 0 : verifyA.verified) && verifyC) {
                         next();
                     }
                     else {
@@ -196,6 +202,7 @@ clientRouter.get(lastConfirmation, payresume_1.getFinishedOrder);
 clientRouter.get(paymentDetail, buyListConfirm_1.getPaymentDetail);
 clientRouter.get(userOrders, userListOrders_1.getUserListOrders);
 clientRouter.get(paymentConfirmation, payConfirm_1.getBanksListInformation);
+clientRouter.post(paymentConfirmation, payConfirm_1.putPayConfirmation);
 clientRouter.get(downloadInvoice, downloadInvoice_1.getInvoice);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map
