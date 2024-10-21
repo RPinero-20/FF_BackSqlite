@@ -37,10 +37,9 @@ const signIn = "/signIn";
 const userAuthInfo = "/userAuthInfo";
 const userOrders = "/userOrders";
 const downloadInvoice = "/downloadInvoice";
-const userAgreement = "/userAgreement";
 clientRouter.use((_req, _res, next) => __awaiter(void 0, void 0, void 0, function* () {
     (0, connect_1.conectToDB)();
-    const publicUrl = [homeUrl, userAuthInfo, categories, productsList, productDetail, payresume, signUp, signIn, userAgreement];
+    const publicUrl = [homeUrl, userAuthInfo, categories, productsList, productDetail, payresume, signUp, signIn];
     const privateUrl = [getAddress, lastConfirmation, paymentDetail, userOrders, paymentConfirmation, downloadInvoice];
     const requestedUrl = _req.path;
     console.log("    requestedUrl", requestedUrl);
@@ -142,16 +141,10 @@ clientRouter.use((_req, _res, next) => __awaiter(void 0, void 0, void 0, functio
             case paymentConfirmation:
                 const verifyA = yield middlewares_1.authJwtStore.validToken(token);
                 const verifyC = yield middlewares_1.authJwtStore.validClient(verifyA === null || verifyA === void 0 ? void 0 : verifyA.uuid);
+                console.log("    paymentConfirmation", verifyA, verifyC);
                 if (_req.method === 'GET') {
                     if ((verifyA === null || verifyA === void 0 ? void 0 : verifyA.verified) && verifyC) {
-                        next();
-                    }
-                    else {
-                        _res.status(403).json({ message: "Acceso denegado." });
-                    }
-                }
-                else if (_req.method === 'POST') {
-                    if ((verifyA === null || verifyA === void 0 ? void 0 : verifyA.verified) && verifyC) {
+                        console.log("    NEXT");
                         next();
                     }
                     else {
@@ -191,7 +184,6 @@ clientRouter.get(homeUrl, home_1.getProducts);
 clientRouter.get(userAuthInfo, clientAcces_1.userAuthGuest);
 clientRouter.post(signUp, clientAcces_1.clientSignUp);
 clientRouter.post(signIn, clientAcces_1.clientSignIn);
-clientRouter.get(userAgreement, downloadInvoice_1.downloadUserAgreement);
 clientRouter.get(categories, categories_1.getCategories);
 clientRouter.get(productsList, productsList_1.getFnToFind);
 clientRouter.get(productDetail, productDetail_1.getProductDetail);
@@ -204,7 +196,6 @@ clientRouter.get(lastConfirmation, payresume_1.getFinishedOrder);
 clientRouter.get(paymentDetail, buyListConfirm_1.getPaymentDetail);
 clientRouter.get(userOrders, userListOrders_1.getUserListOrders);
 clientRouter.get(paymentConfirmation, payConfirm_1.getBanksListInformation);
-clientRouter.post(paymentConfirmation, payConfirm_1.putPayConfirmation);
 clientRouter.get(downloadInvoice, downloadInvoice_1.getInvoice);
 exports.default = clientRouter;
 //# sourceMappingURL=home.js.map
