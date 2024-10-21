@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.downloadUserAgreement = exports.getInvoice = void 0;
+exports.getInvoice = void 0;
 const payResume_1 = require("../models/payResume");
 const productDetail_1 = require("../models/productDetail");
 const services_1 = require("../services");
@@ -76,16 +76,4 @@ const getInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getInvoice = getInvoice;
-const downloadUserAgreement = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const filePath = './services/model/user-agreement.pdf';
-        res.status(201).download(filePath);
-    }
-    catch (error) {
-        res.status(500).json({
-            msg: 'Error interno contacte al administrador.'
-        });
-    }
-});
-exports.downloadUserAgreement = downloadUserAgreement;
 //# sourceMappingURL=downloadInvoice.js.map

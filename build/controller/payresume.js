@@ -255,9 +255,9 @@ const getshippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getshippingAddress = getshippingAddress;
-function updateShippingAddress(clientID, orderID, newShippingAddress, deliverySelected) {
+function updateShippingAddress(clientID, orderID, newShippingAddress) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("Con delivery: ", clientID, orderID, newShippingAddress, deliverySelected);
+        console.log("POR AQUI VA!!!!!!!!", clientID, orderID, newShippingAddress);
         const orderToUpdate = yield buyListConfirm_1.orderDetailConfirmedModel.findOne({
             where: {
                 userId: clientID,
@@ -268,7 +268,7 @@ function updateShippingAddress(clientID, orderID, newShippingAddress, deliverySe
             return false;
         }
         else {
-            const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress, isDelivery: deliverySelected }, {
+            const updatedOrder = yield buyListConfirm_1.orderDetailConfirmedModel.update({ shippingAddress: newShippingAddress }, {
                 where: {
                     userId: clientID,
                     orderId: orderID
@@ -284,13 +284,11 @@ const putShippingAddress = (req, res) => __awaiter(void 0, void 0, void 0, funct
     const token = req.headers["x-access-token"];
     const userId = yield (0, authJwtStore_1.userInfo)(token);
     const { body } = req;
-    console.log("  PARAMS  ", params, "   USERID   ", userId, "  BODY  ", body);
     if (body !== undefined) {
         const orderId = body.orderId;
         const newAddr = body.shippingAddress;
-        const isDelivery = body.isDelivery;
         try {
-            yield updateShippingAddress(userId, orderId, newAddr, isDelivery);
+            yield updateShippingAddress(userId, orderId, newAddr);
             return res.status(201).end();
         }
         catch (error) {

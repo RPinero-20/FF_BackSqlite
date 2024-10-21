@@ -490,7 +490,7 @@ const postUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 name: body.name,
                 idNumber: body.idNumber,
                 email: body.email,
-                password: body.password === null ? null : yield (0, admin_1.encryptPassword)("tempPassword"),
+                password: yield (0, admin_1.encryptPassword)(body.password.toString()),
                 phone: body.phone,
                 status: body.status,
                 job: body.job,
@@ -535,31 +535,22 @@ const putUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.putUsuario = putUsuario;
 const deleteUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.query.id;
-    const parsedUserId = parseInt(userId, 10);
-    if (isNaN(parsedUserId)) {
-        return res.status(400).json({ msg: 'ID de usuario inválido' });
-    }
+    const { id } = req.params;
+    const usuario = yield admin_2.adminUsers.findByPk(id);
     try {
-        const usuario = yield admin_2.adminUsers.findByPk(parsedUserId);
         if (!usuario) {
-            return res.status(403).json({
-                msg: 'No se encuentra el usuario indicado'
+            res.status(403).json({
+                msg: 'No se encuentra el usuario con indicado'
             });
         }
         else {
-            const userUpdated = yield usuario.update({ status: false });
-            if (userUpdated) {
-                return res.status(200).json({ msg: 'Usuario eliminado correctamente' });
-            }
-            else {
-                return res.status(404).json({ Message: "No handled Error." });
-            }
+            yield usuario.update({ status: false });
         }
+        res.json(usuario);
     }
     catch (error) {
         console.error(error);
-        return res.status(500).json({
+        res.status(500).json({
             msg: 'Comuníquese con el administrador.'
         });
     }
@@ -570,7 +561,6 @@ const getClients = (_req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const clients = yield admin_1.adminClients.findAll({
             order: [['status', 'DESC']]
         });
-        console.log("   :::   ", clients);
         const clientsUpdated = clients
             .map((client) => {
             return {
@@ -586,11 +576,10 @@ const getClients = (_req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 password: (client === null || client === void 0 ? void 0 : client.dataValues.password) || '',
             };
         });
-        res.status(201).json(clientsUpdated);
+        res.json(clientsUpdated);
     }
     catch (error) {
-        console.error("Error fetching clients:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({});
     }
 });
 exports.getClients = getClients;
@@ -651,15 +640,13 @@ const postClient = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 address: body.address || '',
                 represent: body.represent || '',
                 codeId: clientUid,
-                password: body.password === null ? null : yield (0, admin_1.encryptPassword)(body.password.toString()),
+                password: yield (0, admin_1.encryptPassword)(body.password),
                 status: body.status ? 1 : 0,
                 rol: 2
             };
             console.log(">>>>>>>> CLIENT: ", client);
-            const createdUser = yield admin_1.adminClients.create(client);
-            if (createdUser) {
-                res.status(201).json({ Message: 'Cliente creado.' });
-            }
+            yield admin_1.adminClients.create(client);
+            res.status(201).json({ Message: 'Cliente creado.' });
         }
         else {
             res.status(400).json({ Message: 'El correo ya se encuentra registrado.' });
@@ -895,7 +882,7 @@ const postOrderDetail = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.postOrderDetail = postOrderDetail;
 const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const orderId = parseInt(req.query.orderId, 10);
+    const orderId = req.query.orderId;
     const userRif = req.body.rif;
     const status = req.body.status;
     try {
@@ -920,6 +907,7 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
                             if (statusCode.dataValues.code === status) {
                                 statusValue = statusCode.dataValues.id;
                             }
+                            ;
                         });
                         if (statusValue !== undefined) {
                             yield admin_1.adminOrdersModel.update({ orderStatusId: statusValue }, {
@@ -928,7 +916,7 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
                                     userId: userId
                                 }
                             });
-                            res.status(200).json({ msg: 'Estado de la orden actualizado correctamente.' });
+                            res.status(201).end();
                         }
                         else {
                             res.status(403).json({ Message: "No es posible cambiar el estado porque falta un requisito." });
@@ -939,19 +927,12 @@ const putOrderEdited = (req, res) => __awaiter(void 0, void 0, void 0, function*
                     }
                 }
                 else {
-                    res.status(404).json({ Message: "Existe error en la relación de los datos." });
+                    res.status(404).json({ Message: "Existe error en la relación de los datos. " });
                 }
             }
-            else {
-                res.status(404).json({ Message: "Orden no encontrada." });
-            }
-        }
-        else {
-            res.status(400).json({ Message: "ID de orden o estado no proporcionados." });
         }
     }
-    catch (error) {
-        console.error("Error al obtener el pedido:", error);
+    catch (_7) {
         res.status(500).json({ Message: 'Error al obtener el pedido.' });
     }
 });
@@ -965,11 +946,8 @@ exports.deleteOrder = deleteOrder;
 const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const body = req.body;
+        console.log("Login admin: ", body);
         const { userName, password } = body;
-        if (password === 'tempPassword') {
-            res.status(401).json({ token: null, Message: "Debe cambiar su password para iniciar sesión por primera vez." });
-            return;
-        }
         const userFound = yield admin_2.adminUsers.findOne({
             where: {
                 email: userName,
@@ -987,6 +965,7 @@ const postLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const token = jsonwebtoken_1.default.sign({ id: userFound.dataValues.uuid }, config_1.default.SECRET, {
                 expiresIn: 86400
             });
+            console.log("TOKEN::::::::: ", token);
             const dataCategories = yield admin_1.adminCategory.findAll();
             const categoriesAll = dataCategories.map((categories) => ({
                 id: categories.dataValues.id.toString(),
