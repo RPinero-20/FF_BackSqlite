@@ -322,7 +322,6 @@ export type ClientURLS = '/home'
     | '/userAuthInfo'
     | '/userOrders'
     | '/downloadInvoice'
-    | '/userAgreement'
     | '/signUp'
     | '/signIn';
 
