@@ -323,7 +323,8 @@ export type ClientURLS = '/home'
     | '/userOrders'
     | '/downloadInvoice'
     | '/signUp'
-    | '/signIn';
+    | '/signIn'
+    | '/logout';
 
 export type AdminURLS = '/home'
     | '/products'
