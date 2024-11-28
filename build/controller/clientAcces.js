@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clientSignIn = exports.clientSignUp = exports.userAuthGuest = void 0;
+exports.clientSignIn = exports.clientLogout = exports.clientSignUp = exports.userAuthGuest = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = __importDefault(require("../config"));
 const clientSession_1 = require("../models/clientSession");
@@ -75,6 +75,39 @@ const clientSignUp = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.clientSignUp = clientSignUp;
+const clientLogout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const receivedToken = req.headers["x-access-token"];
+        console.log("receivedToken::::: ", receivedToken);
+        if (!receivedToken) {
+            return res.status(401).json({ token: null, message: 'Invalid transaction.' });
+        }
+        const result = yield clientSession_1.guestSession.findOne({
+            where: {
+                validToken: receivedToken
+            }
+        });
+        if (!result) {
+            return res.status(404).json({ message: 'No sessions found for the provided token.' });
+        }
+        else {
+            console.log("Result::: ", result.dataValues);
+            const session = result.dataValues.uuid;
+            yield clientSession_1.guestSession.destroy({
+                where: {
+                    uuid: session
+                },
+                force: true
+            });
+            return res.status(200).json({ message: 'Logout successful. Sessions deleted.' });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'An error occurred while logging out.' });
+    }
+});
+exports.clientLogout = clientLogout;
 const clientSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("BODY ::::: ", req.body);
@@ -89,7 +122,7 @@ const clientSignIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(401).json({ token: null, Message: 'Invalid password or user.' });
             return;
         }
-        console.log("User Found SIGNIN:::: ", userFound);
+        console.log("User Found SIGNIN:::: ", userFound.dataValues);
         const userName = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.name;
         let savedPassword = userFound === null || userFound === void 0 ? void 0 : userFound.dataValues.password;
         let receivedPassword = password;
