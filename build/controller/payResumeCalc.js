@@ -39,7 +39,7 @@ function calcProducts(orderRequest) {
             return total + descuentoPorProducto;
         }, 0);
         const ivaUsd = 16;
-        const dolarToday = 42.56;
+        const dolarToday = 47.31;
         const subTotalBsd = subtotal * dolarToday;
         const iva = subTotalBsd * (ivaUsd / 100);
         const totalBsd = subTotalBsd + iva;
