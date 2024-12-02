@@ -22,6 +22,7 @@ const connect_1 = require("../db/connect");
 const payConfirm_1 = require("../controller/payConfirm");
 const downloadInvoice_1 = require("../controller/downloadInvoice");
 const middlewares_1 = require("../middlewares");
+const userProfileController_1 = require("../controller/userProfileController");
 const clientRouter = (0, express_1.Router)();
 const homeUrl = "/home";
 const categories = "/categories";
@@ -37,12 +38,13 @@ const signIn = "/signIn";
 const logoutUser = "/logout";
 const userAuthInfo = "/userAuthInfo";
 const userOrders = "/userOrders";
+const userProfile = "/userProfile";
 const downloadInvoice = "/downloadInvoice";
 const userAgreement = "/userAgreement";
 clientRouter.use((_req, _res, next) => __awaiter(void 0, void 0, void 0, function* () {
     (0, connect_1.conectToDB)();
     const publicUrl = [homeUrl, userAuthInfo, categories, productsList, productDetail, payresume, signUp, signIn, logoutUser, userAgreement];
-    const privateUrl = [getAddress, lastConfirmation, paymentDetail, userOrders, paymentConfirmation, downloadInvoice];
+    const privateUrl = [getAddress, lastConfirmation, paymentDetail, userOrders, userProfile, paymentConfirmation, downloadInvoice];
     const requestedUrl = _req.path;
     console.log("    requestedUrl", requestedUrl);
     const token = _req.headers["x-access-token"];
@@ -140,6 +142,20 @@ clientRouter.use((_req, _res, next) => __awaiter(void 0, void 0, void 0, functio
                     }
                 }
                 break;
+            case userProfile:
+                const veriAcc = yield middlewares_1.authJwtStore.validToken(token);
+                const veriCli = yield middlewares_1.authJwtStore.validClient(veriAcc === null || veriAcc === void 0 ? void 0 : veriAcc.uuid);
+                console.log("    userProfile", veriAcc, veriCli);
+                if (_req.method === 'GET') {
+                    if ((veriAcc === null || veriAcc === void 0 ? void 0 : veriAcc.verified) && veriCli) {
+                        console.log("    NEXT");
+                        next();
+                    }
+                    else {
+                        _res.status(403).json({ message: "Acceso denegado." });
+                    }
+                }
+                break;
             case paymentConfirmation:
                 const verifyA = yield middlewares_1.authJwtStore.validToken(token);
                 const verifyC = yield middlewares_1.authJwtStore.validClient(verifyA === null || verifyA === void 0 ? void 0 : verifyA.uuid);
@@ -197,6 +213,7 @@ clientRouter.get(userAgreement, downloadInvoice_1.downloadUserAgreement);
 clientRouter.get(categories, categories_1.getCategories);
 clientRouter.get(productsList, productsList_1.getFnToFind);
 clientRouter.get(productDetail, productDetail_1.getProductDetail);
+clientRouter.get(userProfile, userProfileController_1.getUserInformation);
 clientRouter.post(payresume, payresume_1.getPayResume);
 clientRouter.put(payresume, payresume_1.getPayResume);
 clientRouter.get(getAddress, payresume_1.getshippingAddress);
