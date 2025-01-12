@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFnToFind = void 0;
 const home_1 = require("../models/home");
 const sequelize_1 = require("sequelize");
+const home_2 = require("./home");
 function separarPalabras(cadena) {
     return cadena.replace(/([a-z])([A-Z])/g, '$1 $2');
 }
@@ -54,6 +55,7 @@ function getProductsByCategory(params) {
                     categoryID: catID
                 }
             });
+            const exchangeCurrency = yield (0, home_2.getExcValueCurrency)();
             const productsList = productListByCategory.map((product) => ({
                 id: product.dataValues.id.toString(),
                 imageUrl: product.dataValues.imageUrl,
@@ -65,7 +67,7 @@ function getProductsByCategory(params) {
                 isOutStock: product.dataValues.isOutStock,
                 categoryID: product.dataValues.categoryID.toString(),
                 sectionID: product.dataValues.sectionID.toString(),
-                price: parseFloat(product.dataValues.price)
+                price: parseFloat(product.dataValues.price) / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value)
             }));
             return (productsList);
         }
@@ -88,6 +90,7 @@ function getProductsByName(params) {
                     }
                 }
             });
+            const exchangeCurrency = yield (0, home_2.getExcValueCurrency)();
             const productsList = productListByName.map((product) => ({
                 id: product.dataValues.id.toString(),
                 imageUrl: product.dataValues.imageUrl,
@@ -99,7 +102,7 @@ function getProductsByName(params) {
                 isOutStock: product.dataValues.isOutStock,
                 categoryID: product.dataValues.categoryID.toString(),
                 sectionID: product.dataValues.sectionID.toString(),
-                price: parseFloat(product.dataValues.price)
+                price: parseFloat(product.dataValues.price) / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value)
             }));
             return (productsList);
         }

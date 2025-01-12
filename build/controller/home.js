@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductList = exports.getProducts = exports.getNotFound = void 0;
+exports.getProductList = exports.getProducts = exports.getExcValueCurrency = exports.getNotFound = void 0;
 const home_1 = require("../models/home");
+const currency_1 = require("../models/currency");
 const getNotFound = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(404);
 });
@@ -27,10 +28,22 @@ function getHomeProducts() {
         return productList;
     });
 }
+function getExcValueCurrency() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const currencyValue = yield currency_1.excCurrenciesModel.findOne({
+            where: {
+                code: 'USD'
+            }
+        });
+        return currencyValue;
+    });
+}
+exports.getExcValueCurrency = getExcValueCurrency;
 const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sections = yield getHomeSections();
         const products = yield getHomeProducts();
+        const exchangeCurrency = yield getExcValueCurrency();
         const sectionsToFront = sections.map(section => {
             const newSection = {
                 sectionId: section.dataValues.id.toString(),
@@ -42,6 +55,7 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
         const productsList = products.map(product => {
             const isFree = product.dataValues.isFree === true;
             const price = isFree ? 0 : parseFloat(product.dataValues.price);
+            const calculatedPrice = price / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value);
             const productsToFront = {
                 id: product.dataValues.id.toString(),
                 imageUrl: product.dataValues.imageUrl,
@@ -53,7 +67,7 @@ const getProducts = (_req, res) => __awaiter(void 0, void 0, void 0, function* (
                 isOutStock: product.dataValues.isOutStock,
                 categoryID: product.dataValues.categoryID.toString(),
                 sectionID: product.dataValues.sectionID.toString(),
-                price: price
+                price: calculatedPrice
             };
             return productsToFront;
         });
@@ -72,6 +86,7 @@ exports.getProducts = getProducts;
 const getProductList = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const productsFromDb = yield getHomeProducts();
+        const exchangeCurrency = yield getExcValueCurrency();
         const productsList = productsFromDb.map((product) => ({
             id: product.dataValues.id.toString(),
             imageUrl: product.dataValues.imageUrl,
@@ -83,8 +98,9 @@ const getProductList = (_req, res) => __awaiter(void 0, void 0, void 0, function
             isOutStock: product.dataValues.isOutStock,
             categoryID: product.dataValues.categoryID.toString(),
             sectionID: product.dataValues.sectionID.toString(),
-            price: parseFloat(product.dataValues.price)
+            price: parseFloat(product.dataValues.price) / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value)
         }));
+        console.log("PRODUCT LIST BY CATEGORY::::: ", productsList);
         res.json(productsList);
     }
     catch (_q) {

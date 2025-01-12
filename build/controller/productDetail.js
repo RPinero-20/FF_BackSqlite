@@ -11,10 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductDetail = void 0;
 const productDetail_1 = require("../models/productDetail");
-const home_1 = require("../models/home");
+const home_1 = require("./home");
+const home_2 = require("../models/home");
 const getProductDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _q;
     const params = req.query;
+    console.log(":::: GET PRODUCT DETAIL ::::");
     try {
         if (params != undefined) {
             if (params.hasOwnProperty('id') === true && params.hasOwnProperty('code') === true) {
@@ -45,6 +47,7 @@ function getDetailByIDnCode(productID, productCode) {
                     code: pCode
                 }
             });
+            const exchangeCurrency = yield (0, home_1.getExcValueCurrency)();
             if (pDetail !== null) {
                 const productDetail = ({
                     id: pDetail.dataValues.id.toString(),
@@ -57,9 +60,9 @@ function getDetailByIDnCode(productID, productCode) {
                     isOutStock: pDetail.dataValues.isOutStock,
                     categoryID: pDetail.dataValues.categoryID.toString(),
                     sectionID: pDetail.dataValues.sectionID.toString(),
-                    price: parseFloat(pDetail.dataValues.price)
+                    price: parseFloat(pDetail.dataValues.price) / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value)
                 });
-                const relatedSection = yield home_1.sectionsHome.findAll({
+                const relatedSection = yield home_2.sectionsHome.findAll({
                     where: {
                         id: productDetail.sectionID
                     }
@@ -72,7 +75,7 @@ function getDetailByIDnCode(productID, productCode) {
                     };
                     return newSection;
                 });
-                const relatedProducts = yield home_1.productsHome.findAll({
+                const relatedProducts = yield home_2.productsHome.findAll({
                     where: {
                         sectionID: productDetail.sectionID
                     }
@@ -89,7 +92,7 @@ function getDetailByIDnCode(productID, productCode) {
                         isOutStock: product.dataValues.isOutStock,
                         categoryID: product.dataValues.categoryID.toString(),
                         sectionID: product.dataValues.sectionID.toString(),
-                        price: parseFloat(product.dataValues.price)
+                        price: parseFloat(product.dataValues.price) / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value)
                     };
                     return productsToFront;
                 });

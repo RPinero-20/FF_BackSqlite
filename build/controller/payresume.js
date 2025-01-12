@@ -13,6 +13,7 @@ exports.getFinishedOrder = exports.putShippingAddress = exports.getshippingAddre
 const payResume_1 = require("../models/payResume");
 const payResumeCalc_1 = require("./payResumeCalc");
 const usuario_1 = require("../models/usuario");
+const home_1 = require("./home");
 const buyListConfirm_1 = require("../models/buyListConfirm");
 const authJwtStore_1 = require("../middlewares/authJwtStore");
 const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -27,6 +28,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
     }
     try {
+        const exchangeCurrency = yield (0, home_1.getExcValueCurrency)();
         let currencyValue;
         if (body.currency === "bsd") {
             currencyValue = 1;
@@ -60,7 +62,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                         isOffer: product === null || product === void 0 ? void 0 : product.dataValues.isOffer,
                         isFree: product === null || product === void 0 ? void 0 : product.dataValues.isFree,
                         isOutStock: product === null || product === void 0 ? void 0 : product.dataValues.isOutStock,
-                        price: product === null || product === void 0 ? void 0 : product.dataValues.price,
+                        price: (product === null || product === void 0 ? void 0 : product.dataValues.price) / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value),
                         requestedQty: product === null || product === void 0 ? void 0 : product.dataValues.requestedQty,
                         discount: product === null || product === void 0 ? void 0 : product.dataValues.discount,
                     };
@@ -126,7 +128,7 @@ const getPayResume = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                         isOffer: product === null || product === void 0 ? void 0 : product.dataValues.isOffer,
                         isFree: product === null || product === void 0 ? void 0 : product.dataValues.isFree,
                         isOutStock: product === null || product === void 0 ? void 0 : product.dataValues.isOutStock,
-                        price: product === null || product === void 0 ? void 0 : product.dataValues.price,
+                        price: (product === null || product === void 0 ? void 0 : product.dataValues.price) / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value),
                         requestedQty: product === null || product === void 0 ? void 0 : product.dataValues.requestedQty,
                         discount: product === null || product === void 0 ? void 0 : product.dataValues.discount,
                     };
@@ -315,6 +317,7 @@ function findPayResume(orderId) {
 function findProductsWishList(wishProductList) {
     return __awaiter(this, void 0, void 0, function* () {
         const productList = [];
+        const exchangeCurrency = yield (0, home_1.getExcValueCurrency)();
         for (const wishProduct of wishProductList) {
             const productId = parseInt(wishProduct.productId);
             const product = yield buyListConfirm_1.lastBuyListConfirmedModel.findByPk(productId);
@@ -324,7 +327,7 @@ function findProductsWishList(wishProductList) {
                     imageUrl: product.dataValues.imageUrl,
                     name: product.dataValues.name,
                     code: product.dataValues.code,
-                    price: product.dataValues.price,
+                    price: product.dataValues.price / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value),
                     quantity: wishProduct.quantity
                 };
                 productList.push(arrayTemporal);

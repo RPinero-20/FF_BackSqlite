@@ -38,7 +38,7 @@ const putOrderConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
                         orderId: existOrder.dataValues.orderId,
                         isOrderConfirmed: isConfirmed
                     };
-                    console.log("linea 31::: ", orderConfirmed);
+                    console.log("buyListConfirmed linea 31::: ", orderConfirmed);
                     yield buyListConfirm_1.isOrderConfirmedModel.update(orderConfirmed, { where: {
                             orderId: existOrder.dataValues.orderId,
                         } });

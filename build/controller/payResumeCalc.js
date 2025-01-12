@@ -11,9 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkStock = exports.calcularDescuentoGlobal = exports.calcularDescuentoProducto = exports.calcProducts = void 0;
 const payResume_1 = require("../models/payResume");
+const home_1 = require("./home");
 function calcProducts(orderRequest) {
     return __awaiter(this, void 0, void 0, function* () {
         const body = orderRequest;
+        const exchangeCurrency = yield (0, home_1.getExcValueCurrency)();
         const productID = body.productsList.map((strID) => strID.productId);
         const productQty = body.productsList.map((prodQty) => prodQty.quantity);
         const productByIdPromises = productID.map((id) => __awaiter(this, void 0, void 0, function* () {
@@ -32,16 +34,19 @@ function calcProducts(orderRequest) {
             return Object.assign(Object.assign({}, product), { price: product.price * product.requestedQty });
         });
         const subtotal = productsCalculated.reduce((total, product) => {
-            return total + product.price;
+            const price = product.price / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value);
+            return total + price;
         }, 0);
         const totalDescuentoPorProducto = productsCalculated.reduce((total, product) => {
             const descuentoPorProducto = (product === null || product === void 0 ? void 0 : product.requestedQty) * (product === null || product === void 0 ? void 0 : product.discount);
-            return total + descuentoPorProducto;
+            const calculatedDiscount = descuentoPorProducto / (exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value);
+            return total + calculatedDiscount;
         }, 0);
         const ivaUsd = 16;
-        const dolarToday = 47.31;
-        const subTotalBsd = subtotal * dolarToday;
-        const iva = subTotalBsd * (ivaUsd / 100);
+        const dolarToday = exchangeCurrency === null || exchangeCurrency === void 0 ? void 0 : exchangeCurrency.dataValues.value;
+        const subTotalBsd = subtotal / dolarToday;
+        console.log(" subTotalBsd ::::::: ", subTotalBsd);
+        const iva = subTotalBsd * (ivaUsd * 100);
         const totalBsd = subTotalBsd + iva;
         const igtf = subtotal * (3 / 100);
         const totalImpuesto = igtf * 0.16;
