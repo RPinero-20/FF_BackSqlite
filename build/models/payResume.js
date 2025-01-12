@@ -109,5 +109,8 @@ exports.cartListProducts = connect_1.default.define('ff_products', {
     price: {
         type: sequelize_typescript_1.DataType.DECIMAL
     },
+    priceUSD: {
+        type: sequelize_typescript_1.DataType.DECIMAL
+    }
 });
 //# sourceMappingURL=payResume.js.map

@@ -44,6 +44,9 @@ exports.productPriceCode = connect_1.default.define('ff_products', {
     price: {
         type: sequelize_typescript_1.DataType.STRING
     },
+    priceUSD: {
+        type: sequelize_typescript_1.DataType.STRING
+    },
     code: {
         type: sequelize_typescript_1.DataType.STRING
     },
@@ -89,6 +92,9 @@ exports.productDetails = connect_1.default.define('ff_products', {
     price: {
         type: sequelize_typescript_1.DataType.DECIMAL
     },
+    priceUSD: {
+        type: sequelize_typescript_1.DataType.DECIMAL
+    }
 }, {
     timestamps: false
 });

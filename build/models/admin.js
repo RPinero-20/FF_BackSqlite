@@ -265,6 +265,9 @@ exports.adminProducts = connect_1.default.define('ff_products', {
     price: {
         type: sequelize_typescript_1.DataType.DECIMAL
     },
+    priceUSD: {
+        type: sequelize_typescript_1.DataType.DECIMAL
+    },
 });
 exports.adminUsers = connect_1.default.define('ff_users', {
     id: {
