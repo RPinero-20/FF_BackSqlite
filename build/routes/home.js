@@ -41,10 +41,13 @@ const userOrders = "/userOrders";
 const userProfile = "/userProfile";
 const downloadInvoice = "/downloadInvoice";
 const userAgreement = "/userAgreement";
+const currencyRate = "/currencyRate";
 clientRouter.use((_req, _res, next) => __awaiter(void 0, void 0, void 0, function* () {
     (0, connect_1.conectToDB)();
-    const publicUrl = [homeUrl, userAuthInfo, categories, productsList, productDetail, payresume, signUp, signIn, logoutUser, userAgreement];
-    const privateUrl = [getAddress, lastConfirmation, paymentDetail, userOrders, userProfile, paymentConfirmation, downloadInvoice];
+    const publicUrl = [homeUrl, userAuthInfo, categories, productsList, productDetail,
+        payresume, signUp, signIn, logoutUser, userAgreement, currencyRate];
+    const privateUrl = [getAddress, lastConfirmation, paymentDetail, userOrders,
+        userProfile, paymentConfirmation, downloadInvoice];
     const requestedUrl = _req.path;
     console.log("    requestedUrl", requestedUrl);
     const token = _req.headers["x-access-token"];
@@ -205,6 +208,7 @@ clientRouter.use((_req, _res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 }));
 clientRouter.get(homeUrl, home_1.getProducts);
+clientRouter.get(currencyRate, home_1.getCurrencyRate);
 clientRouter.get(userAuthInfo, clientAcces_1.userAuthGuest);
 clientRouter.post(signUp, clientAcces_1.clientSignUp);
 clientRouter.post(signIn, clientAcces_1.clientSignIn);
