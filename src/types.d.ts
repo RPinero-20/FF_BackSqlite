@@ -307,6 +307,11 @@ export interface adminCategorySection {
     sectionId: string
 }
 
+export interface currencyRateInterface {
+    code: string,
+    name: string,
+    value: string
+}
 
 export type ClientURLS = '/home'
     | '/productDetail'
@@ -326,7 +331,8 @@ export type ClientURLS = '/home'
     | '/userAgreement'
     | '/signUp'
     | '/signIn'
-    | '/logout';
+    | '/logout'
+    | '/currencyRate';
 
 export type AdminURLS = '/home'
     | '/products'
