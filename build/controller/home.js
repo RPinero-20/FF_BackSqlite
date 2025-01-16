@@ -9,13 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductList = exports.getProducts = exports.getExcValueCurrency = exports.getNotFound = void 0;
+exports.getProductList = exports.getProducts = exports.getExcValueCurrency = exports.getCurrencyRate = exports.getNotFound = void 0;
 const home_1 = require("../models/home");
 const currency_1 = require("../models/currency");
 const getNotFound = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(404);
 });
 exports.getNotFound = getNotFound;
+const getCurrencyRate = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const currencyToday = yield currency_1.excCurrenciesModel.findOne({
+        where: {
+            code: 'USD'
+        }
+    });
+    const currencyToReturn = {
+        code: currencyToday === null || currencyToday === void 0 ? void 0 : currencyToday.dataValues.code,
+        name: currencyToday === null || currencyToday === void 0 ? void 0 : currencyToday.dataValues.name,
+        value: currencyToday === null || currencyToday === void 0 ? void 0 : currencyToday.dataValues.value
+    };
+    res.json(currencyToReturn);
+});
+exports.getCurrencyRate = getCurrencyRate;
 function getHomeSections() {
     return __awaiter(this, void 0, void 0, function* () {
         const sectionsFromDB = yield home_1.sectionsHome.findAll();
